@@ -19,4 +19,4 @@ class ServiceFactory:
             return None
         return self._config['base_class']
 
-    
+
