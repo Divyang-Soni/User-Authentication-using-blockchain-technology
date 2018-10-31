@@ -1,0 +1,14 @@
+server:
+  port: 5001
+mail_server:
+  server_address: smtp.gmail.com
+  port: 465
+  # TODO: Following to be stored as an Environment Variable in Docker
+  email: xxxxx
+  password: xxxxx
+aws_rds:
+  rds: url
+  access_key_id: xxxx
+  secret_access_key: xxxx
+
+
