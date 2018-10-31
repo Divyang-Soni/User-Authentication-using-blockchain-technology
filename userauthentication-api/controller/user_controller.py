@@ -1,5 +1,5 @@
 from flask import Flask, request, Response, Blueprint
-from flask import jsonify, request
+from flask import jsonify
 from util import factory
 
 user = Blueprint('user_controller', __name__, template_folder='')
@@ -45,10 +45,3 @@ def check_health():
     msg = {'Message': 'DB is alive.'}
     return jsonify(msg)
 
-
-
-
-@user.route("/status", methods=["GET"])
-def check_status():
-    msg = {'Message': 'Hello, Blockchain Success'}
-    return jsonify(msg)
