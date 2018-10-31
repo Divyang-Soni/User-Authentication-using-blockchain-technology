@@ -1,0 +1,8 @@
+directory : "services"
+base_class : "BaseService"
+services:
+  get_user_data :
+    module : "user_data"
+    class : "get_user_data"
+    type : ["GET", "POST"]
+
