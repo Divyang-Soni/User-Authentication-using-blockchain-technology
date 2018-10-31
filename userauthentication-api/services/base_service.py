@@ -45,6 +45,9 @@ class BaseService:
                 return False
         return True
 
+    def get_message(self):
+        return self._message
+
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):
         pass

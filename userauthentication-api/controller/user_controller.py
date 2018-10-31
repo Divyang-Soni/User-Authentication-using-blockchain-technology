@@ -1,5 +1,6 @@
 from flask import Flask, request, Response, Blueprint
-from flask import jsonify
+from flask import jsonify, request
+from util import factory
 
 user = Blueprint('user_controller', __name__, template_folder='')
 
@@ -15,8 +16,17 @@ It will execute below steps
 '''
 @user.route("/api/v1/<service>", methods=["GET", "POST"])
 def process_request(service):
-    return jsonify({'status':200})
+    factory_instance = factory.ServiceFactory()
+    params = request.values
+    class_name = factory_instance.get_service_class(service, request.method)
+    if class_name is None:
+        return "404"
 
+    instance = class_name(request.session,params)
+    if not instance.is_valid_session() or not instance.parse_params():
+        instance.parse_params()
+        instance.process_request()
+    return instance.get_message()
 
 '''
 This api call will be used to do health check for the API server

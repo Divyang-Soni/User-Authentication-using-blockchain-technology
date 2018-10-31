@@ -2,6 +2,7 @@ import yaml
 import logging
 import importlib
 
+
 class ServiceFactory:
 
     _config = None
@@ -19,7 +20,7 @@ class ServiceFactory:
             return None
         return self._config['base_class']
 
-    def get_instance(self, service, method):
+    def get_service_class(self, service, method):
         try:
             if 'services' not in self._config or service not in self._config['services']:
                 return None
@@ -30,8 +31,8 @@ class ServiceFactory:
                 return None
 
             module = importlib.import_module(self._config['directory']+"."+service_cfg['module'])
-            service_instance = getattr(module, service_cfg['class'])
-            return service_instance()
+            service_class = getattr(module, service_cfg['class'])
+            return service_class
         except Exception as e:
             logging.error("Error while getting instance of service.")
         return None
