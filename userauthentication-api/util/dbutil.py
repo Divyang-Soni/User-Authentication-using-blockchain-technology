@@ -87,11 +87,10 @@ class DBUtil:
     '''
         Example to use transaction with connection
         ----------------------------------------
-                connection = get_connection(None)
+                connection = get_connection()
                 trans = connection.begin()
                 try:
-                    r1 = connection.execute(table1.select())
-                    connection.execute(table1.insert(), col1=7, col2='this is some data')
+                    r1 = SQLUtil().execute_query(sql, connection)
                     trans.commit()
                 except:
                     trans.rollback()
@@ -103,13 +102,17 @@ class DBUtil:
 
     def get_connection(self, old_connection=None):
         if old_connection:
+            try:
+                old_connection.isolation_level
+            except Exception as e: #
+                return self.get_connection()
             return old_connection
         else:
             return self.__engine.connect()
 
     '''
     This method is used to close the existing connection
-    e.g. connection = DBUtil().get_connection(connection=existing_connection)
+    e.g. connection = DBUtil().close_connection(existing_connection)
     
     
     If your method is getting connection as parameter 
@@ -117,20 +120,151 @@ class DBUtil:
     It is not correct the close the connection as it belongs to the caller method
     in that case, you can use this method with passing old_connection
     
-    e.g. connection = DBUtil().get_connection(connection=existing_connection,old_connection=old_connection)
+    e.g. connection = DBUtil().close_connection(existing_connection,old_connection=old_connection)
     '''
 
-    def close_connection(self, old_connection=None, connection=None):
+    def close_connection(self, connection, old_connection=None):
         if not old_connection and connection:
             connection.close()
         return None
 
 
-# class SQLUtil:
-#
-#     __db = DBUtil()
-#
-#     def exeute_query(self, sql, connection = None):
-#         new_connection = self.__db.get_connection(connection)
+class SQLUtil:
 
+    __db = DBUtil()
 
+    '''
+    This function is used to fetch data using query
+    @sql : sql query to fetch data ()
+    @args_dict (Optional): if passed query contains parameters, we must have argument dictionary to get parameters
+    @connection (Optional): if you want to use existing connection which you have
+    @model (Optional): if you have model specific to the sql table and want to get dictionary of the o/p rows instead of dict of dict,
+                you can pass the model 
+    
+    example :
+    
+    data = SQLUtil().fetch_data("select 1 as count")
+    # data = [{count:1}]
+    
+    data = SQLUtil().fetch_data("select 1 as count", connection=con)
+    # data = [{count:1}]
+    
+    data = SQLUtil().fetch_data("select name,id from users where id = %s", args_dict=(1))
+    # data = [{name: divyang, id : 1 }]
+    
+    data = SQLUtil().fetch_data("select name,id from users where id = %s", args_dict=(1), model=user)
+    # data = [user(name: divyang, id : 1)]
+    '''
+
+    def fetch_data(self, sql, args_dict=None, connection=None, model=None):
+        try:
+            new_connection = self.__db.get_connection(old_connection=connection)
+            if new_connection:
+                ret = []
+                # If we are accessing the rows via column name instead of position we
+                # need to add the arguments to conn.cursor.
+                cur = new_connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+                # check is arguments are passed and its parameterised query
+                if args_dict:
+                    cur.execute(sql, args_dict)
+                else:
+                    cur.fetchall(sql)
+                # iterate through the cursor are put the records in output dict
+                for record in cur:
+                    # if model is passed, it must have the deserialize method in it
+                    if model and callable(getattr(model, "deserialize", None)):
+                        data = model()
+                        data.deserialize(record)
+                        ret.append(data)
+                    else:
+                       ret.append(record)
+                self.__db.close_connection(new_connection, old_connection=connection)
+                return ret
+        except Exception as e:
+            print("Error while fetching data : {}".format(e))
+        return None
+
+    '''
+    This function is used to fetch data using query
+    @sql : sql query to fetch data ()
+    @args_dict (Optional): if passed query contains parameters, we must have argument dictionary to get parameters
+    @connection (Optional): if you want to use existing connection which you have
+    
+    example :
+
+    data = SQLUtil().execute_query("update user set anme = "divyang" where id = 1")
+    # data = True 
+
+    data = SQLUtil().execute_query("update user set anme = "divyang" where id = 1", connection=con)
+    # data = True
+
+    data = SQLUtil().fetch_data("update user set anme = "divyang" where id = %s", args_dict=(1))
+    # data = True
+    
+    data = SQLUtil().fetch_data("update user set anme = "divyang" where id = %s")
+    # data = False  (as arguments not passed)
+
+    '''
+    def execute_query(self, sql, args_dict=None, connection=None):
+        try:
+            new_connection = self.__db.get_connection(connection)
+            if new_connection:
+                ret = []
+                # If we are accessing the rows via column name instead of position we
+                # need to add the arguments to conn.cursor.
+                cur = new_connection.cursor()
+                if args_dict:
+                    cur.execute(sql, args_dict)
+                else:
+                    cur.execute(sql)
+                self.__db.close_connection(new_connection, old_connection=connection)
+        except Exception as e:
+            print("Error while executing query : {}".format(e))
+            return False
+        return True
+
+    '''
+    This function is used to fetch data using query
+    @sql : sql query to fetch data ()
+    @args_dict (Optional): if passed query contains parameters, we must have argument dictionary to get parameters
+    @connection (Optional): if you want to use existing connection which you have
+
+    example :
+
+    data = SQLUtil().execute_query_multiple("update user set name = "divyang" where id = 1")
+    # data = True 
+
+    data = SQLUtil().execute_query_multiple("update user set name = "divyang" where id = 1", connection=con)
+    # data = True
+    users = (
+            {id=1, name=divyang1},
+            {id=2, name=divyang2},
+            {id=3, name=divyang3}
+            )
+            
+    data = SQLUtil().execute_query_multiple("update user set name = "divyang" where id = %(id)s", args_dict=users)
+    # data = True
+    ## Note : in this example the dynamic field %(id)s means getting id field from the users entry
+
+    data = SQLUtil().fetch_data("update user set name = "divyang" where id = %(id)s")
+    # data = False  (as arguments not passed)
+    '''
+
+    def execute_query_multiple(self, sql, args_dict=None, connection=None):
+        try:
+            new_connection = self.__db.get_connection(connection)
+            if new_connection:
+                ret = []
+                # If we are accessing the rows via column name instead of position we
+                # need to add the arguments to conn.cursor.
+                cur = new_connection.cursor(cursor_factory=psycopg2.extras.DictCurso)
+                if args_dict:
+                    cur.execute(sql, args_dict)
+                else:
+                    cur.execute(sql)
+                self.__db.close_connection(new_connection, old_connection=connection)
+        except Exception as e:
+            print("Error while executing query : {}".format(e))
+            return False
+        return True
