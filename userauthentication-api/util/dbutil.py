@@ -1,5 +1,6 @@
 import psycopg2
 import sqlalchemy as sql
+from util import config
 from models import database
 
 '''
@@ -18,14 +19,27 @@ class DBUtil:
     '''
     This method will do below functionality
     1. parsing database config data from config file
-    2. Create dbpool
-    3. provide dataase connectiom
+    2. Create database connection pool
+    3. provide database connection
     '''
-    def __init__(self):
+    def __init__(self,file_path="./config/config.yaml"):
         # code to read database config and create database model
-        self.__db_model = database.DBModel()
+        self.__get_database_config(file_path)
         if self.__db_model:
             self.__create_engine()
+
+    def __get_database_config(self, config_file):
+        cfg = config.Config(file_path=config_file)
+        db_config = cfg.get_section('database')
+        if db_config:
+            self.__db_model = database.DBModel()
+            self.__db_model.database_port = db_config['database_port']
+            self.__db_model.database_host = db_config['database_host']
+            self.__db_model.database_name = db_config['database_name']
+            self.__db_model.user_name = db_config['user_name']
+            self.__db_model.password = db_config['password']
+            self.__db_model.pool_size = db_config['pool_size']
+            self.__db_model.pool_timeout = db_config['pool_timeout']
 
     def __create_engine(self):
         try:
@@ -44,9 +58,8 @@ class DBUtil:
             print("Error while creating database engine : {}".format(e))
             self.__engine = None
 
-    def __is_engine_created(self):
+    def is_engine_created(self):
         return self.__engine is not None
-
 
     '''
     This method is returning the custom creator of  
@@ -99,13 +112,8 @@ class DBUtil:
 
         -----------------------------------------
         '''
-
     def get_connection(self, old_connection=None):
-        if old_connection:
-            try:
-                old_connection.isolation_level
-            except Exception as e: #
-                return self.get_connection()
+        if old_connection and not old_connection.closed:
             return old_connection
         else:
             return self.__engine.connect()
@@ -122,7 +130,6 @@ class DBUtil:
     
     e.g. connection = DBUtil().close_connection(existing_connection,old_connection=old_connection)
     '''
-
     def close_connection(self, connection, old_connection=None):
         if not old_connection and connection:
             connection.close()
@@ -131,8 +138,10 @@ class DBUtil:
 
 class SQLUtil:
 
-    __db = DBUtil()
+    __db = None
 
+    def __init__(self, file_path="./config/config.yaml"):
+        self.__db = DBUtil(file_path=file_path)
     '''
     This function is used to fetch data using query
     @sql : sql query to fetch data ()
@@ -161,15 +170,12 @@ class SQLUtil:
             new_connection = self.__db.get_connection(old_connection=connection)
             if new_connection:
                 ret = []
-                # If we are accessing the rows via column name instead of position we
-                # need to add the arguments to conn.cursor.
-                cur = new_connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
                 # check is arguments are passed and its parameterised query
                 if args_dict:
-                    cur.execute(sql, args_dict)
+                    cur = new_connection.execute(sql, args_dict)
                 else:
-                    cur.fetchall(sql)
+                    cur = new_connection.execute(sql)
                 # iterate through the cursor are put the records in output dict
                 for record in cur:
                     # if model is passed, it must have the deserialize method in it
@@ -210,14 +216,10 @@ class SQLUtil:
         try:
             new_connection = self.__db.get_connection(connection)
             if new_connection:
-                ret = []
-                # If we are accessing the rows via column name instead of position we
-                # need to add the arguments to conn.cursor.
-                cur = new_connection.cursor()
                 if args_dict:
-                    cur.execute(sql, args_dict)
+                    new_connection.execute(sql, args_dict)
                 else:
-                    cur.execute(sql)
+                    new_connection.execute(sql)
                 self.__db.close_connection(new_connection, old_connection=connection)
         except Exception as e:
             print("Error while executing query : {}".format(e))
@@ -255,14 +257,10 @@ class SQLUtil:
         try:
             new_connection = self.__db.get_connection(connection)
             if new_connection:
-                ret = []
-                # If we are accessing the rows via column name instead of position we
-                # need to add the arguments to conn.cursor.
-                cur = new_connection.cursor(cursor_factory=psycopg2.extras.DictCurso)
                 if args_dict:
-                    cur.execute(sql, args_dict)
+                    new_connection.execute(sql, args_dict)
                 else:
-                    cur.execute(sql)
+                    new_connection.execute(sql)
                 self.__db.close_connection(new_connection, old_connection=connection)
         except Exception as e:
             print("Error while executing query : {}".format(e))
