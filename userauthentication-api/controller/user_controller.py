@@ -41,7 +41,7 @@ def check_health():
 This api call will be used to do health check for the DB server
 '''
 @user.route("/HealthCheckDB", methods=["GET"])
-def check_health():
+def check_health_DB():
     msg = {'Message': 'DB is alive.'}
     return jsonify(msg)
 
