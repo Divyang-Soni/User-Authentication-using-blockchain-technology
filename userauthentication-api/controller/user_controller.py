@@ -23,10 +23,12 @@ def process_request(service):
         return "404"
 
     instance = class_name(request.session,params)
-    if not instance.is_valid_session() or not instance.parse_params():
-        instance.parse_params()
+    if instance.is_valid_session() \
+            and instance.validate_params()\
+            and instance.parse_params():
         instance.process_request()
     return instance.get_message()
+
 
 '''
 This api call will be used to do health check for the API server
@@ -41,7 +43,7 @@ def check_health():
 This api call will be used to do health check for the DB server
 '''
 @user.route("/HealthCheckDB", methods=["GET"])
-def check_health():
+def check_health_db():
     msg = {'Message': 'DB is alive.'}
     return jsonify(msg)
 
