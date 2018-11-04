@@ -1,12 +1,23 @@
-/*This file contains psql script for db creation and table creation*/
-sudo -u postgres psql //starts psql with postgres as superuser for first time
-createuser --interactive //creates new user
-(add new user's name & his role) (for eg raj & assign superuser role)
-createdb UABT; //creates new database
-exit
-sudo -u raj psql //connects postgres with this user
-\c UABT //connects to this db
+----------------------------- Organization details -----------------------------
+CREATE TABLE IF NOT EXISTS organization_details(id serial PRIMARY KEY, name varchar(100), address_line_1 varchar(200), city varchar(50), state varchar(50), country varchar(50), zip int, phone varchar(50), headquarter varchar(50), founded_date date, organization_type int, created_date date, created_by int, modified_date date, modified_by int, delete_flag int, deleted_by int);
 
-CREATE TABLE company_details(cid serial PRIMARY KEY, name varchar(100), address varchar(200), city varchar(50), state varchar(50), country varchar(50), zip int, phone varchar(50), headquarter varchar(50), founded_date date, organization_type varchar(50), size int, created_date date, created_by int, modified_date date, modified_by int);
+CREATE TABLE IF NOT EXISTS organization_branch(id serial PRIMARY KEY, organization_id int NOT NULL, address_line_1 varchar(200), city varchar(50), state varchar(50), country varchar(50), zip int, phone varchar(15), created_date date, created_by int, modified_date date, modified_by int, delete_flag int, deleted_by int);
 
-CREATE TABLE company_branch(bid serial PRIMARY KEY, cid int NOT NULL, address varchar(200), city varchar(50), state varchar(50), country varchar(50), zip int, phone varchar(50), created_date date, created_by int, modified_date date, modified_by int);
+----------------------------- organization types ----------------------------
+
+CREATE TABLE IF NOT EXISTS organization_type(id serial PRIMARY KEY, type VARCHAR(50) UNIQUE, delete_flag int DEFAULT 0);
+
+INSERT INTO organization_type (type) values ('educational');
+INSERT INTO organization_type (type) values ('medical');
+INSERT INTO organization_type (type) values ('it');
+INSERT INTO organization_type (type) values ('government');
+
+----------------------------- record types ----------------------------
+
+CREATE TABLE IF NOT EXISTS record_type(id serial PRIMARY KEY, type VARCHAR(50) UNIQUE, delete_flag int DEFAULT 0);
+
+INSERT INTO record_type (type) values ('educational');
+INSERT INTO record_type (type) values ('medical');
+INSERT INTO record_type (type) values ('employment');
+INSERT INTO record_type (type) values ('driving');
+
