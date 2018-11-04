@@ -2,7 +2,7 @@ directory : "services"
 base_class : "BaseService"
 services:
   get_user_data :
-    module : "user_data"
-    class : "get_user_data"
+    module : "organzation_service"
+    class : "OrganizarionService"
     type : ["GET", "POST"]
 

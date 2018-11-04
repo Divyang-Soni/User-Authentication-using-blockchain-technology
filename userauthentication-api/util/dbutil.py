@@ -1,6 +1,6 @@
 import psycopg2
 import sqlalchemy as sql
-from util import config
+from util import config, util
 from models import database
 
 '''
@@ -131,7 +131,7 @@ class DBUtil:
     e.g. connection = DBUtil().close_connection(existing_connection,old_connection=old_connection)
     '''
     def close_connection(self, connection, old_connection=None):
-        if not old_connection and connection:
+        if not old_connection and not old_connection.closed and connection:
             connection.close()
         return None
 
@@ -144,11 +144,12 @@ class SQLUtil:
         self.__db = DBUtil(file_path=file_path)
     '''
     This function is used to fetch data using query
-    @sql : sql query to fetch data ()
+    @sql : sql query to fetch data 
     @args_dict (Optional): if passed query contains parameters, we must have argument dictionary to get parameters
     @connection (Optional): if you want to use existing connection which you have
-    @model (Optional): if you have model specific to the sql table and want to get dictionary of the o/p rows instead of dict of dict,
-                you can pass the model 
+    @model (Optional): if you have model specific to the sql table and want to get dictionary of the o/p rows instead of dict of json,
+                you can pass the model. 
+    Note :  the passes model must have all the fields with the same name  
     
     example :
     
@@ -178,10 +179,9 @@ class SQLUtil:
                     cur = new_connection.execute(sql)
                 # iterate through the cursor are put the records in output dict
                 for record in cur:
-                    # if model is passed, it must have the deserialize method in it
-                    if model and callable(getattr(model, "deserialize", None)):
-                        data = model()
-                        data.deserialize(record)
+                    # if model is passed
+                    if model:
+                        data = util.json_to_model(record, model())
                         ret.append(data)
                     else:
                        ret.append(record)

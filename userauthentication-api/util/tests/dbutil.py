@@ -1,16 +1,13 @@
 import unittest
 from util import dbutil
 
+
 class User:
 
     id = None
     fname = None
     lname = None
 
-    def deserialize(self, data):
-        self.id = data['id']
-        self.fname = data['fname']
-        self.lname = data['lname']
 
 
 class TestDBUtil(unittest.TestCase):
@@ -38,7 +35,6 @@ class TestDBUtil(unittest.TestCase):
         self.assertTrue(
              self.sql_util.execute_query("INSERT INTO tmp (fname, lname) values(%s, %s)",args_dict=params))
 
-
     def test_execute_multiple_params(self):
         params = []
         params.append({'fname': 'neha', "lname":'jethani'})
@@ -47,7 +43,7 @@ class TestDBUtil(unittest.TestCase):
         self.assertTrue(
             self.sql_util.execute_query_multiple("INSERT INTO tmp (fname,lname) values(%(fname)s, %(lname)s)", args_dict=params))
 
-    def test_fetch_data(self):
+    def test_fetch_data1(self):
         params = []
         params.append({'fname': 'divyang', "lname": 'soni'})
         params.append({'fname': 'neha', "lname": 'jethani'})
@@ -55,8 +51,8 @@ class TestDBUtil(unittest.TestCase):
         params.append({'fname': 'varun', "lname": 'shah'})
         self.assertTrue(
             self.sql_util.execute_query("INSERT INTO tmp (fname,lname) values(%(fname)s, %(lname)s)", args_dict=params))
-        data = self.sql_util.fetch_data("select * from tmp where fname = 'divyang'", model=User)
-        self.assertEqual("soni", data[0].lname)
+        data = self.sql_util.fetch_data("select * from tmp where fname = 'divyang'")
+        self.assertEqual("soni", data[0]['lname'])
 
     def test_fetch_data(self):
 
@@ -75,7 +71,11 @@ class TestDBUtil(unittest.TestCase):
 
     def test_execute_fetch_using_connection_data(self):
 
-        connection = self.db_util.get_connection()
+        c = self.db_util.get_connection()
+
+        connection = self.db_util.get_connection(old_connection=c)
+
+
         tran = connection.begin()
 
         params = []
@@ -90,13 +90,16 @@ class TestDBUtil(unittest.TestCase):
         params.append('divyang')
         data = self.sql_util.fetch_data("select * from tmp where fname = %s", args_dict=params, model=User,connection=connection)
         self.assertEqual("soni", data[0].lname)
-        tran.rollback()
+        tran.commit()
 
         params = []
         params.append('divyang')
         data = self.sql_util.fetch_data("select * from tmp where fname = %s", args_dict=params, model=User,
                                         connection=connection)
         self.assertEqual(0, len(data))
+
+        connection = self.db_util.close_connection(connection, old_connection=c )
+        connection = self.db_util.close_connection(c)
 
     def tearDown(self):
         self.sql_util.execute_query("DROP TABLE tmp")
