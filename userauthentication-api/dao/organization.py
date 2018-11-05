@@ -1,4 +1,5 @@
-from util import dbutil
+from dbutil import dbutil
+
 
 class Organization:
 
