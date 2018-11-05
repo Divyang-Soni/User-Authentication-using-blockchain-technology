@@ -25,10 +25,12 @@ INSERT INTO record_type (type) values ('driving');
 
 CREATE TABLE IF NOT EXISTS user_basic(id serial PRIMARY KEY, given_name VARCHAR(50), last_name VARCHAR(50), dob date, email VARCHAR(50), password VARCHAR(256), user_type int, created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
 
-CREATE TABLE IF NOT EXISTS user_profile(id serial PRIMARY KEY, user_id int NOT NULL, gender char(1), ethinicity VARCHAR(20), address_line_1 VARCHAR(200), address_line_2 VARCHAR(50), city varchar(50), state varchar(50), country_of_residence int, country_of_citizenship int, zip int, phone varchar(50), profile_photo VARCHAR(MAX), created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
+CREATE TABLE IF NOT EXISTS user_profile(id serial PRIMARY KEY, user_id int NOT NULL, gender char(1), ethinicity VARCHAR(20), address_line_1 VARCHAR(200), address_line_2 VARCHAR(50), city varchar(50), state varchar(50), country_of_residence VARCHAR(50), country_of_citizenship VARCHAR(50), zip int, phone varchar(50), profile_photo VARCHAR(MAX), created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
 
-CREATE TABLE IF NOT EXISTS user_verify(id serial PRIMARY KEY, user_id int NOT NULL, verification_id VARCHAR(50), verification_type int, created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
+CREATE TABLE IF NOT EXISTS user_verify(id serial PRIMARY KEY, user_id int NOT NULL, verification_id VARCHAR(50), verification_type VARCHAR(50), created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
 
 CREATE TABLE IF NOT EXISTS user_type(id serial PRIMARY KEY, type VARCHAR(50) UNIQUE, delete_flag int DEFAULT 0);
 
 CREATE TABLE IF NOT EXISTS user_organization_mapping(id serial PRIMARY KEY, organization_id int NOT NULL, user_id int NOT NULL, user_role int NOT NULL, delete_flag int DEFAULT 0);
+
+CREATE TABLE IF NOT EXISTS verification_type(id serial PRIMARY KEY, type VARCHAR(50) UNIQUE, delete_flag int DEFAULT 0);
