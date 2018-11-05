@@ -1,0 +1,72 @@
+@startuml
+
+package controller{
+    class UserController
+    class OrganizationController
+    class AdminController
+}
+
+package factory{
+    class ServiceFactory
+}
+
+package model{
+    class UserBasic
+    class UserProfile
+    class OrganizationDetail
+    class OrganizationBranch
+}
+
+package services{
+    class BaseService
+    class OrganizationService
+    class UserService
+    class AdminService
+}
+
+package dao{
+    class OrganizationDAO
+    class UserDAO
+    class AdminDAO
+}
+
+package dbutil{
+    class SQLUtil
+    class DBUtil
+}
+
+BaseService <|-- UserService
+BaseService <|-- OrganizationService
+BaseService <|-- AdminService
+
+UserController -> ServiceFactory
+OrganizationController - ServiceFactory
+AdminController - ServiceFactory
+
+
+UserController --> BaseService
+OrganizationController --> BaseService
+AdminController --> BaseService
+
+UserService --> UserBasic
+UserService --> UserProfile
+
+OrganizationService --> OrganizationDetail
+OrganizationService --> OrganizationBranch
+
+AdminService --> UserBasic
+AdminService --> UserProfile
+AdminService --> OrganizationDetail
+AdminService --> OrganizationBranch
+
+AdminService -> AdminDAO
+OrganizationService -> OrganizationDAO
+UserService -> UserDAO
+
+OrganizationDAO --> SQLUtil
+UserDAO --> SQLUtil
+AdminDAO --> SQLUtil
+
+SQLUtil -->  DBUtil
+
+@enduml

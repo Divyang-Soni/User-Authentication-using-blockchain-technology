@@ -1,0 +1,15 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor user
+
+rectangle "User UseCase"{
+    user -- (login)
+    (login) .> (authnetication) : include
+    user -- (logout)
+    user -- (view own \nInformation)
+    user -- (flag incorrect\n information)
+    user -- (usecase grant/revoke \n permission to \norganization requests)
+}
+
+@enduml
