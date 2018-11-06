@@ -1,0 +1,38 @@
+@startuml
+actor User
+User -> UserController: Review Own Data
+UserController -> BaseService: Fetch respective service
+UserController <-- BaseService
+UserController -> UserService: fetch own data
+UserService -> UserDAO: fetch own data
+UserService <-- UserDAO
+UserController <-- UserService
+User -> UserController: Flag Incorrect Block of data
+UserController -> BaseService: Fetch respective service
+UserController <-- BaseService
+UserController -> UserService: Flag data
+UserService -> UserDAO: Flag data
+UserService <-- UserDAO
+UserController <-- UserService
+User -> UserController: Response
+
+actor Admin
+Admin -> AdminController: Flag Incorrect Block of data
+AdminController -> BaseService: Fetch respective service
+AdminController <-- BaseService
+AdminController -> AdminService: Flag data as request
+alt Approve Flagged data and Invalidate Block
+    AdminService -> AdminDAO: Invalidate Block
+    AdminService <-- AdminDAO
+    AdminController <-- AdminService
+else Decline flag
+    AdminService -> AdminDAO: Decline Flag and keep existing data
+    AdminService <-- AdminDAO
+    AdminController <-- AdminService
+end
+Admin <-- AdminController: Response
+
+
+
+Admin -> AdminController: Response
+@enduml
