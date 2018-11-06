@@ -7,32 +7,150 @@ package controller{
 }
 
 package factory{
-    class ServiceFactory
+    class ServiceFactory{
+        __initialize_factory()
+        get_base_class_name()
+        get_service_class()
+    }
 }
 
 package model{
-    class UserBasic
-    class UserProfile
-    class OrganizationDetail
-    class OrganizationBranch
+    class OrganizationDetail{
+        str id,
+        str name,
+        str address_line_1,
+        str address_line_2,
+        str city,
+        str state,
+        str country,
+        int zip,
+        str phone,
+        str headquarter,
+        date founded_date,
+        int organization_type,
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag,
+        int deleted_by
+    }
+
+    class UserProfile{
+        str id,
+        int user_id,
+        char gender,
+        str ethinicity,
+        str address_line_1,
+        str address_line_2,
+        str city,
+        str state,
+        str country_of_residence,
+        str country_of_citizenship,
+        int zip,
+        str phone,
+        str profile_photo
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag,
+        int deleted_by;
+    }
+
+    class UserBasic{
+        str id,
+        str given_name,
+        str last_name,
+        date dob,
+        str email,
+        str password,
+        int user_type,
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag ,
+        int deleted_by
+    }
+
+    class OrganizationBranch{
+        str id ,
+        int organization_id,
+        str address_line_1,
+        str address_line_2 ,
+        str city,
+        str state,
+        str country,
+        int zip,
+        str phone,
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag,
+        int deleted_by
+    }
 }
 
 package services{
-    class BaseService
-    class OrganizationService
-    class UserService
-    class AdminService
+    class BaseService{
+        validate_session(session)
+        is_valid_session()
+        validate(required)
+        get_message()
+        validate_params()
+        parse_params()
+        process_request()
+    }
+    class OrganizationService{
+        get_organization_data(id)
+        add_user_in_organizarion(params)
+        add_role_for_user_organization(params)
+        register_organization(params)
+    }
+    class UserService{
+        view_data(params)
+        flag_incorrect_data(params)
+    }
+    class AdminService{
+        approve_organization_registration(params)
+        remove_flagged_data(params)
+    }
 }
 
 package dao{
-    class OrganizationDAO
-    class UserDAO
-    class AdminDAO
+    class OrganizationDAO{
+        insert()
+        update()
+        delete()
+    }
+    class UserDAO{
+        insert()
+        update()
+        delete()
+    }
+    class AdminDAO{
+        insert()
+        update()
+        delete()
+    }
 }
 
 package dbutil{
-    class SQLUtil
-    class DBUtil
+    class SQLUtil{
+        fetch_data(sql, args_dict, connection, model),
+        execute_query(sql, args_dict, connection),
+        execute_query_multiple(sql, args_dict, connection)
+    }
+    class DBUtil{
+        __get_database_config(config_file)
+        __create_engine()
+        is_engine_created()
+        __creator()
+        get_connection(old_connection)
+        close_connection(connection, old_connection)
+    }
 }
 
 BaseService <|-- UserService
