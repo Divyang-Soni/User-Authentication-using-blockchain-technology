@@ -36,6 +36,43 @@ class BaseDao(SQLUtil):
         sql = self.create_single_insert_query(table_name, fields)
         return self.execute_query(sql, args_dict=args_dict, connection=connection)
 
+
+    @staticmethod
+    def create_single_update_query(table_name, fields, where='1=1'):
+        if not fields or type(fields) is not list:
+            raise BaseException("Fileds must be a dictionary object")
+
+        str_fields = ','.join(l + '=%s' for l in fields)
+        return "UPDATE TABLE {} SET {} WHERE {}}".format(table_name, str_fields, where)
+
+    def update_single_record(self, table_name, fields, args_dict = None, where='1=1', connection = None):
+        sql = self.create_single_update_query(table_name, fields, where=where)
+        return self.execute_query(sql, args_dict=args_dict, connection=connection)
+
+    @staticmethod
+    def create_update_query(table_name, fields, where='1=1'):
+        if not fields or type(fields) is not list:
+            raise BaseException("Fileds must be a dictionary object")
+        str_fields = ','.join(l +"=%(" + l + ")s" for l in fields)
+        return "UPDATE TABLE {} SET {} WHERE {}}".format(table_name, str_fields, where)
+
+    def update_single_record(self, table_name, fields, args_dict = None, where='1=1',connection=None):
+        sql = self.create_update_query(table_name, fields, where=where)
+        return self.execute_query(sql, args_dict=args_dict, connection=connection)
+
+    @staticmethod
+    def create_single_update_query(table_name, fields, where='1=1'):
+        if not fields or type(fields) is not list:
+            raise BaseException("Fileds must be a dictionary object")
+
+        str_fields = '=%s,'.join(fields)
+        str_fields += '= %s'
+        return "UPDATE TABLE {} SET {} WHERE {}}".format(table_name, str_fields, where)
+
+    def update_single_record(self, table_name, fields, args_dict, connection=None):
+        sql = self.create_single_insert_query(table_name, fields)
+        return self.execute_query(sql, args_dict=args_dict, connection=connection)
+
     @staticmethod
     def create_select_query(table_name, fields='*', where='1=1'):
         str_fields = ','.join(fields)

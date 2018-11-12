@@ -1,4 +1,4 @@
-
+from util import util
 from models.organization import OrganizationDetails, OrganizationBranch
 from dao.base_dao import BaseDao
 
@@ -7,38 +7,44 @@ class OrganizationDao(BaseDao):
 
     __org_id = None
 
-    __select_sql = "SELECT %s FROM organization_details where id = %s and delete_flag = 0"
-    __select_all_sql = "SELECT * FROM organization_details where delete_flag = 0"
-    __insert_sql = "INSERT INTO organization_details " \
-                      " VALUES (%(name)s,%(address_line_1)s,%(city,state)s,%(country)s,%(zip)s," \
-                      " %(phone)s,%(headquarter)s,%(founded_date)s,%(organization_type)s," \
-                      " %(created_date)s,%(created_by)s,%(modified_date)s,%(modified_by)s," \
-                      " %(delete_flag)s,%(deleted_by)s)"
+    __organization_details_fields = ['name', 'address_line_1',
+                                     'city', 'state,country', 'zip', 'phone', 'headquarter',
+                                     'founded_date', 'organization_type', 'created_date',
+                                     'created_by', 'modified_date', 'modified_by',
+                                     'delete_flag', 'deleted_by']
 
-    __branch_details_fields = "(name,address_line_1,city,state,country,zip," \
-                              " phone,,headquarter,founded_date,organization_type," \
-                              " created_date,created_by,,modified_date,modified_by," \
-                              " delete_flag,deleted_by)"
-
-    __select_branches = "SELECT %s FROM organization_branch WHERE organization_id = %s and delete_flag = 0"
-
-    def __init__(self, org_id):
+    def __init__(self, org_id, file_path='./config/config.yaml'):
         self.__org_id = org_id
-        super()
+        BaseDao.__init__(self)
+
+    def create_organization(self, data=None, model_instance=None, fields=None, old_connection=None):
+        if model_instance:
+            data = util.model_to_json(model_instance)
+        if not fields:
+            fields = self.__organization_details_fields
+        return self.insert_single_record('organization_details',fields=fields, args_dict=data, connection=old_connection)
+
+    def add_organization_branch(self, data=None, model_instance=None, fields=None, old_connection=None):
+        if model_instance:
+            data = util.model_to_json(model_instance)
+        if not fields:
+            fields = self.__organization_details_fields
+        return self.insert_single_record('organization_details',fields=fields, args_dict=data, connection=old_connection)
 
     def get_organization_details(self, org_id=None, old_connection=None, fields='*'):
-        sql = self.__select_sql
-
+        sql = self.create_select_query('organization_details',fields=fields)
         params = [fields]
-
         if not org_id:
             org_id = self.__org_id
         if not org_id:
-            sql = self.__select_all_sql
+            return self.get_data('organization_details',fields=fields, connection=old_connection,
+                                 model=OrganizationDetails)
         else:
             params.append(org_id)
-        return self.__sql_util.fetch_data(sql, args_dict=params, connection=old_connection, model=OrganizationDetails)
-
+            where = 'id = %s'
+            return self.get_data('organization_details', fields=fields, where=where,
+                                 args_dict=params, connection=old_connection,
+                                 model=OrganizationDetails)
 
     def get_organization_branches(self, org_id=None, old_connection=None, fields='*'):
         if not org_id:
@@ -47,8 +53,12 @@ class OrganizationDao(BaseDao):
             raise "No Organization Id found to fetch branches."
 
         sql = self.__select_branches
-        params = [fields, org_id]
-        return self.__sql_util.fetch_data(sql, args_dict=params, connection=old_connection, model=OrganizationBranch)
+        params = [org_id]
+        where = 'organization_id = %s'
+        return self.get_data('organization_branch', fields=fields, where=where,
+                             args_dict=params, connection=old_connection,
+                             model= OrganizationBranch)
+
 
     '''
     This function is used to get all information about an organization which includes
