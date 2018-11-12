@@ -1,5 +1,5 @@
 import unittest
-from dbutil import dbutil
+from dbutil.dbutil import DBUtil, SQLUtil
 
 
 class User:
@@ -15,8 +15,8 @@ class TestDBUtil(unittest.TestCase):
     db_util = None
 
     def setUp(self):
-        self.sql_util = dbutil.SQLUtil(file_path='../../config/config.yaml')
-        self.db_util = dbutil.DBUtil(file_path='../../config/config.yaml')
+        self.sql_util = SQLUtil(file_path='../../config/config.yaml')
+        self.db_util = DBUtil(file_path='../../config/config.yaml')
 
 
         self.sql_util.execute_query(
