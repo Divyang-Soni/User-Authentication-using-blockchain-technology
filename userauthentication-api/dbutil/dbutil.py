@@ -131,9 +131,11 @@ class DBUtil:
     e.g. connection = DBUtil().close_connection(existing_connection,old_connection=old_connection)
     '''
     def close_connection(self, connection, old_connection=None):
-        if not old_connection and not old_connection.closed and connection:
+        if old_connection and not old_connection.closed:
+            return None
+        elif connection:
             connection.close()
-        return None
+            return None
 
 
 class SQLUtil:
