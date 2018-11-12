@@ -24,11 +24,20 @@ class TestBaseDao(unittest.TestCase):
         sql = (self.base_dao.create_select_query("tmp", fields=fileds, where=where)).lower()
         self.assertEqual(sql, "select fname,lname from tmp where fname = 'divyang'")
 
+
+        sql = (self.base_dao.create_select_query("tmp", where=where)).lower()
+        self.assertEqual(sql, "select * from tmp where fname = 'divyang'")
+
+        sql = (self.base_dao.create_select_query("tmp")).lower()
+        self.assertEqual(sql, "select * from tmp where 1=1")
+
     def test_create_insert_query(self):
         print("running {}".format("test_create_select_query"))
         fileds = ['fname', 'lname']
         sql = (self.base_dao.create_insert_query("tmp", fields=fileds)).lower()
         self.assertEqual(sql, "insert into tmp (fname,lname) values(%(fname)s,%(lname)s)")
+
+        self.assertRaises(BaseException, self.base_dao.create_insert_query,"tmp", fields="temp")
 
     def test_create_single_insert_query(self):
         print("running {}".format("test_create_single_insert_query"))

@@ -8,8 +8,13 @@ class BaseDao(SQLUtil):
 
     @staticmethod
     def create_insert_query(table_name, fields):
+
+        if not fields or type(fields) is not type([]):
+            raise BaseException("Fileds must be a dictonary object")
+
         values = ','.join("%("+l+")s" for l in fields)
         str_fields = ','.join(fields)
+
         return "INSERT INTO {} ({}) VALUES({})".format(table_name, str_fields, values)
 
     def insert_records(self, table_name, fields, args_dict, connection = None):
@@ -18,8 +23,13 @@ class BaseDao(SQLUtil):
 
     @staticmethod
     def create_single_insert_query(table_name, fields):
+
+        if not fields or type(fields) is not list:
+            raise BaseException("Fileds must be a dictonary object")
+
         values = ','.join("%s" for l in fields)
         str_fields = ','.join(fields)
+
         return "INSERT INTO {} ({}) VALUES({})".format(table_name, str_fields, values)
 
     def insert_single_record(self, table_name, fields, args_dict, connection = None):
