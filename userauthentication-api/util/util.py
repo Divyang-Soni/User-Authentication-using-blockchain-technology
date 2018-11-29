@@ -1,6 +1,11 @@
 import yaml
 import logging
 import pickle
+from datetime import datetime
+
+
+LOG_FORMAT = '%(asctime)-15s %(filename)s %(funcName)s line %(lineno)d %(levelname)s:  %(message)s'
+
 
 def parse_config(path="./config/config.yaml"):
     """
@@ -32,3 +37,10 @@ def model_to_json(obj):
     if obj:
         return pickle.dumps(obj)
     return {}
+
+
+def init_logging(file_path=None):
+    if file_path:
+        file_path = "./logs_{}/{}".format(datetime.now(), file_path)
+    logging.basicConfig(format=LOG_FORMAT, level="INFO", filename=file_path)
+    return logging.getLogger()
