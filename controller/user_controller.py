@@ -1,6 +1,7 @@
 from flask import Flask, request, Response, Blueprint
 from flask import jsonify
 from util import factory
+from flask_cors import CORS, cross_origin
 
 user = Blueprint('user_controller', __name__, template_folder='')
 
@@ -15,6 +16,7 @@ It will execute below steps
     5. run "process_request" from the instance and return the message from the instance
 '''
 @user.route("/api/v1/<service>", methods=["GET", "POST"])
+@cross_origin(supports_credentials=True)
 def process_request(service):
     factory_instance = factory.ServiceFactory()
     params = request.values
