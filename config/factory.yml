@@ -5,4 +5,8 @@ services:
     module : "organzation_service"
     class : "OrganizarionService"
     type : ["GET", "POST"]
+  create_user:
+    module: "user_service"
+    class: "UserService"
+    type: ["GET", "POST"]
 

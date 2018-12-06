@@ -1,7 +1,7 @@
-from services import base_service
+from services.base_service import BaseService
 
 
-class CompanyData(base_service):
+class CompanyData(BaseService):
 
     def __init__(self, session, params):
         pass

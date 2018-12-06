@@ -1,5 +1,5 @@
 from flask import request
-
+from abc import abstractmethod
 '''
 This class is a base service which has skeleton code which needs to be followed by all service
 Basically all the service will extend this class and will override 2=3 abstract methods
@@ -26,10 +26,11 @@ class BaseService:
     # checking uid is available in session or not
     # TODO : This method needs to be changed with proper checking
     def validate_session(self, session):
-        if "uid" not in session:
-            self._is_valid =  False
-        else:
-            self._is_valid = True
+        return True
+        # if "uid" not in session:
+        #     self._is_valid =  False
+        # else:
+        #     self._is_valid = True
 
     # public method to check that the session is valid or not
     def is_valid_session(self):
@@ -49,13 +50,16 @@ class BaseService:
         return self._message
 
     # a base method which will internally call validate method with required params for each service
+    @abstractmethod
     def validate_params(self):
         pass
 
     # a base method which will be implemented in every service to parse params
+    @abstractmethod
     def parse_params(self):
         pass
 
     # a base method which will trigger the actual code
+    @abstractmethod
     def process_request(self):
         pass

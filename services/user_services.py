@@ -1,23 +1,21 @@
-from services import base_service
+from services.base_service import BaseService
 from dao.UserDao import UserDao
 
 
-class UserData(base_service):
-
-    userdao = None
+class UserService(BaseService):
 
     def __init__(self, session, params):
-        base_service.__init__(session, params)
+        BaseService.__init__(session, params)
 
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):
-        pass
+        return True
 
     # a base method which will be implemented in every service to parse params
     def parse_params(self):
-        pass
+        return True
 
     # a base method which will trigger the actual code
     def process_request(self):
-        self.userdao = UserDao(0)
-        self.userdao.create_user(self.params)
+        UserDao(0).create_user(self.params)
+        self._message = 'success'

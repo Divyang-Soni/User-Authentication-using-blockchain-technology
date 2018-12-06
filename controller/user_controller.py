@@ -22,7 +22,7 @@ def process_request(service):
     if class_name is None:
         return "404"
 
-    instance = class_name(request.session,params)
+    instance = class_name(request.session, params)
     if instance.is_valid_session() \
             and instance.validate_params()\
             and instance.parse_params():
