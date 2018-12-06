@@ -1,5 +1,5 @@
 server:
-  port: 5001
+  port: 8080
 mail_server:
   server_address: smtp.gmail.com
   port: 465
