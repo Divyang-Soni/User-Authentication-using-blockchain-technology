@@ -50,7 +50,7 @@ class OrganizationDao(BaseDao):
         if not org_id:
             org_id = self.__org_id
         if not org_id:
-            raise "No Organization Id found to fetch branches."
+            raise Exception("No Organization Id found to fetch branches.")
 
         sql = self.__select_branches
         params = [org_id]
@@ -73,7 +73,7 @@ class OrganizationDao(BaseDao):
         if not org_id:
             org_id = self.__org_id
         if not org_id:
-            raise "No Organization Id found to fetch details."
+            raise Exception("No Organization Id found to fetch details.")
 
         organization = {}
         organization['details'] = self.get_organization_details(id=org_id, connection=connection)
