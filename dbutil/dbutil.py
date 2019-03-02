@@ -142,7 +142,7 @@ class SQLUtil:
 
     __db = None
 
-    def __init__(self, file_path="./config/config.yaml"):
+    def __init__(self, file_path):
         self.__db = DBUtil(file_path=file_path)
     '''
     This function is used to fetch data using query

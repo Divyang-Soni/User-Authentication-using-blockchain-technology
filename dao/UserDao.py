@@ -6,13 +6,13 @@ class UserDao(BaseDao):
 
     __user_id = None
 
-    __user_basic_fields = ['given_name', 'last_name',
-                           'dob', 'email,password', 'user_type', 'created_date', 'created_by',
-                           'modified_date', 'modified_by', 'delete_flag', 'deleted_by']
+    __user_basic_fields = ['given_name', 'lt_name',
+                           'dob', 'email', 'password', 'user_type', 'created_date', 'created_by',
+                           ]
 
     def __init__(self, user_id, file_path='./config/config.yaml'):
         self.__user_id = user_id
-        BaseDao.__init__(self)
+        super(UserDao, self).__init__(file_path=file_path)
 
     def create_user(self, data=None, model_instance=None, fields=None, old_connection=None):
         if model_instance:
