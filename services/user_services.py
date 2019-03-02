@@ -5,7 +5,7 @@ from dao.UserDao import UserDao
 class UserService(BaseService):
 
     def __init__(self, session, params):
-        BaseService.__init__(session, params)
+        super(UserService, self).__init__(session, params)
 
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):

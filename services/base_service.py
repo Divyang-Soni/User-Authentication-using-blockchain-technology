@@ -21,11 +21,12 @@ class BaseService:
     # checking the validity of session and setting the valid param
     def __init__(self, session, params):
         self._params = params
-        self.validate_session()
+        self.validate_session(session)
 
     # checking uid is available in session or not
     # TODO : This method needs to be changed with proper checking
     def validate_session(self, session):
+        self._is_valid = True
         return True
         # if "uid" not in session:
         #     self._is_valid =  False

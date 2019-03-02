@@ -6,7 +6,7 @@ services:
     class : "OrganizarionService"
     type : ["GET", "POST"]
   create_user:
-    module: "user_service"
+    module: "user_services"
     class: "UserService"
     type: ["GET", "POST"]
 
