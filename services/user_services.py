@@ -17,5 +17,5 @@ class UserService(BaseService):
 
     # a base method which will trigger the actual code
     def process_request(self):
-        UserDao(0).create_user(self.params)
+        UserDao(0).create_user(self._params)
         self._message = 'success'

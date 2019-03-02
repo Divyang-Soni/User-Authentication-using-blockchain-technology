@@ -19,7 +19,7 @@ It will execute below steps
 @cross_origin(supports_credentials=True)
 def process_request(service):
     factory_instance = factory.ServiceFactory()
-    params = request.values
+    params = request.args
     class_name = factory_instance.get_service_class(service, request.method)
     if class_name is None:
         return "404"

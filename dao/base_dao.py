@@ -3,8 +3,8 @@ from dbutil.dbutil import SQLUtil
 
 class BaseDao(SQLUtil):
 
-    def __init__(self, file_path='./config/config.yaml'):
-        SQLUtil.__init__(self, file_path=file_path)
+    def __init__(self, file_path):
+        super(BaseDao, self).__init__(file_path=file_path)
 
     @staticmethod
     def create_insert_query(table_name, fields):
@@ -32,8 +32,8 @@ class BaseDao(SQLUtil):
 
         return "INSERT INTO {} ({}) VALUES({})".format(table_name, str_fields, values)
 
-    def insert_single_record(self, table_name, fields, args_dict, connection = None):
-        sql = self.create_single_insert_query(table_name, fields)
+    def insert_single_record(self, table_name, fields, args_dict, connection=None):
+        sql = self.create_insert_query(table_name, fields)
         return self.execute_query(sql, args_dict=args_dict, connection=connection)
 
 
