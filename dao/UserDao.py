@@ -6,7 +6,7 @@ class UserDao(BaseDao):
 
     __user_id = None
 
-    __user_basic_fields = ['given_name', 'lt_name',
+    __user_basic_fields = ['given_name', 'last_name',
                            'dob', 'email', 'password', 'user_type', 'created_date', 'created_by',
                            ]
 
