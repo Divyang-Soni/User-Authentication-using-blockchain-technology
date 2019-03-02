@@ -7,7 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 config = parse_config()
 
-if __name__ == '__main__':
+if __name__ == '__main__' or __name__ == 'app':
     app.register_blueprint(user)
     port = int(os.environ.get('PORT', config['server']['port']))
     CORS(app, support_credentials=True)

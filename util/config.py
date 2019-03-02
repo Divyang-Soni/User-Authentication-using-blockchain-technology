@@ -5,7 +5,7 @@ class Config:
     __config_type = None
     __config = None
 
-    def __init__(self,file_path='./config/config.yaml', config_type="server"):
+    def __init__(self, file_path='./config/config.yaml', config_type="server"):
         self.__config_type = config_type
         self.__config = util.parse_config(file_path)
 

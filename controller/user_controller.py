@@ -1,4 +1,4 @@
-from flask import Flask, request, Response, Blueprint
+from flask import Flask, request, Response, Blueprint, session
 from flask import jsonify
 from util import factory
 from flask_cors import CORS, cross_origin
@@ -24,7 +24,7 @@ def process_request(service):
     if class_name is None:
         return "404"
 
-    instance = class_name(request.session, params)
+    instance = class_name(session, params)
     if instance.is_valid_session() \
             and instance.validate_params()\
             and instance.parse_params():
