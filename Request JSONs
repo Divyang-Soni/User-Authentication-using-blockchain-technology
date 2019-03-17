@@ -1,0 +1,19 @@
+###Organization signup:
+
+let payload = {
+                'name': this.state.name,
+                'email': this.state.email,
+                'password': this.state.password,
+                'address_line_1': this.state.address_line_1,
+                'address_line_2': this.state.address_line_2,
+                'city':this.state.city,
+                'state':this.state.state,
+                'country':this.state.country,
+                'zip':this.state.zip,
+                'phone':this.state.phone,
+                'headquarter' : this.state.headquarter,
+                'founded_date'  : this.state.founded_date,
+                'organization_type': this.state.organization_type
+            };
+            
+            
