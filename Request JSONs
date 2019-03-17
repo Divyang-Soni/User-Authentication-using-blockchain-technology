@@ -15,5 +15,15 @@ let payload = {
                 'founded_date'  : this.state.founded_date,
                 'organization_type': this.state.organization_type
             };
+    
+Organization user sends data to be added to the block.
+
+let payload = {
+                'user_email' : this.state.email,
+                'role' : this.state.role,
+                'start_date' : this.state.start_date,
+                'end_date' : this.state.end_date,
+                'highlights' : this.state.highlights
+            };
             
             
