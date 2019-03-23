@@ -15,7 +15,7 @@ let payload = {
                 'organization_type': this.state.organization_type
             };
             
-API  :-> /user/signup
+#### API  :-> /user/signup
 
 export const doSignUp = (payload) =>
     fetch (`/user/signup`,
@@ -38,8 +38,38 @@ Response:
 200 -> signup request successfully submitted
 (code) -> when email already exitsxt and user cannot sign up
 (code) -> some error occurred
+
+### Login
+
+let payload = {
+                'email': this.state.email,
+                'password': this.state.password
+            };
+           
+export const doLogin = (payload) =>
+    fetch(`/user/login`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        credentials:'include',
+        body: JSON.stringify(payload)
+    }).then(res => {
+        return res;
+    }).catch(error => {
+        console.log("This is error");
+        console.log(error);
+        return error;
+    });
     
-Organization user sends data to be added to the block.
+Response:
+200 -> sucessfully signed in 
+user's profile data and session
+(code) -> invalid username and password
+(code) -> any other error       
+
+### Organization user sends data to be added to the block.
 
 let payload = {
                 'user_email' : this.state.email,
