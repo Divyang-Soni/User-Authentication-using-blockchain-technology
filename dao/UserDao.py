@@ -6,9 +6,9 @@ class UserDao(BaseDao):
 
     __user_id = None
 
-    __user_basic_fields = ['given_name', 'last_name',
-                           'dob', 'email', 'password', 'user_type', 'created_date', 'created_by',
-                           ]
+    __user_creation_fields = ['given_name', 'last_name',
+                              'dob', 'email', 'password', 'user_type', 'created_date', 'created_by',
+                              ]
 
     def __init__(self, user_id, file_path='./config/config.yaml'):
         self.__user_id = user_id
@@ -18,8 +18,10 @@ class UserDao(BaseDao):
         if model_instance:
             data = util.model_to_json(model_instance)
         if not fields:
-            fields = self.__user_basic_fields
+            fields = self.__user_creation_fields
         return self.insert_single_record('user_basic', fields=fields, args_dict=data, connection=old_connection)
+
+
 
 
 

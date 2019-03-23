@@ -1,20 +1,26 @@
 from util import util
 from models.organization import OrganizationDetails, OrganizationBranch
 from dao.base_dao import BaseDao
+from datetime import datetime
 
 
 class OrganizationDao(BaseDao):
 
     __org_id = None
+    __user_id = None
 
     __organization_details_fields = ['name', 'address_line_1',
                                      'city', 'state,country', 'zip', 'phone', 'headquarter',
                                      'founded_date', 'organization_type', 'created_date',
-                                     'created_by', 'modified_date', 'modified_by',
-                                     'delete_flag', 'deleted_by']
+                                     'created_by', ]
 
-    def __init__(self, org_id, file_path='./config/config.yaml'):
+    __organization_branch_fields = ['organization_id', 'address_line_1', 'address_line_2',
+                                    'city', 'state', 'country', 'zip',
+                                    'phone', 'created_date', 'created_by']
+
+    def __init__(self, org_id):
         self.__org_id = org_id
+        self.__user_id = 1
         BaseDao.__init__(self)
 
     def create_organization(self, data=None, model_instance=None, fields=None, old_connection=None):
@@ -22,14 +28,18 @@ class OrganizationDao(BaseDao):
             data = util.model_to_json(model_instance)
         if not fields:
             fields = self.__organization_details_fields
-        return self.insert_single_record('organization_details',fields=fields, args_dict=data, connection=old_connection)
+            data['created_by'] = self.__user_id
+            data['created_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        return self.insert_single_record('organization_details', fields=fields, args_dict=data,
+                                         connection=old_connection)
 
     def add_organization_branch(self, data=None, model_instance=None, fields=None, old_connection=None):
         if model_instance:
             data = util.model_to_json(model_instance)
         if not fields:
-            fields = self.__organization_details_fields
-        return self.insert_single_record('organization_details',fields=fields, args_dict=data, connection=old_connection)
+            fields = self.__organization_branch_fields
+        return self.insert_single_record('organization_branch', fields=fields, args_dict=data,
+                                         connection=old_connection)
 
     def get_organization_details(self, org_id=None, old_connection=None, fields='*'):
         sql = self.create_select_query('organization_details',fields=fields)
@@ -37,7 +47,7 @@ class OrganizationDao(BaseDao):
         if not org_id:
             org_id = self.__org_id
         if not org_id:
-            return self.get_data('organization_details',fields=fields, connection=old_connection,
+            return self.get_data('organization_details', fields=fields, connection=old_connection,
                                  model=OrganizationDetails)
         else:
             params.append(org_id)

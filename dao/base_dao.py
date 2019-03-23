@@ -81,3 +81,13 @@ class BaseDao(SQLUtil):
     def get_data(self, table_name, fields='*', where='1=1', args_dict=None, connection=None, model=None):
         sql = self.create_select_query(table_name, fields=fields, where=where)
         return self.fetch_data(sql, args_dict=args_dict, connection=connection, model=model)
+
+    @staticmethod
+    def create_delete_query(table_name, user_id, record_id):
+        return "update table {} set delete_flag = 1 and deleted_by= {} WHERE id = {}"\
+            .format(table_name, user_id, record_id)
+
+    def delete_record(self, table_name, record_id, user_id, connection=None):
+        sql = self.create_delete_query(table_name, user_id, record_id)
+        return self.fetch_data(sql, connection=connection)
+
