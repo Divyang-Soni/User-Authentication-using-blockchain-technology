@@ -38,6 +38,13 @@ Response:
 200 -> signup request successfully submitted
 (code) -> when email already exitsxt and user cannot sign up
 (code) -> some error occurred
+response json
+
+500 -> Internal server error
+
+404 -> service not found
+
+503 -> Service not available
 
 ### Login
 
@@ -67,7 +74,20 @@ Response:
 200 -> sucessfully signed in 
 user's profile data and session
 (code) -> invalid username and password
-(code) -> any other error       
+(code) -> any other error    
+
+response json : 
+  {
+  user_id : int
+  user_type : int
+  organization_ids : int[]
+  }
+
+500 -> Internal server error
+
+404 -> service not found
+
+503 -> Service not available
 
 ### Organization user sends data to be added to the block.
 
