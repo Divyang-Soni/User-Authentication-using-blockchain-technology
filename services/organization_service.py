@@ -16,4 +16,8 @@ class OrganizationService(BaseService):
 
     # a base method which will trigger the actual code
     def process_request(self):
-        pass
+        if hasattr(self, self._execution):
+            func = getattr(self, self._execution)
+            func()
+        else:
+            raise Exception("Function is not implemented.")

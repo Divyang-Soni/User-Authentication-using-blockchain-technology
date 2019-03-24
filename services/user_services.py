@@ -20,6 +20,8 @@ class UserService(BaseService):
         if hasattr(self, self._execution):
             func = getattr(self, self._execution)
             func()
+        else:
+            raise Exception("Function is not implemented.")
 
     def create_user(self):
         if UserDao(self._user_id).create_user(self._params):
