@@ -10,7 +10,7 @@ class OrganizationDao(BaseDao):
     __user_id = None
 
     __organization_details_fields = ['name', 'address_line_1', 'address_line_2'
-                                     'city', 'state','country', 'zip', 'phone', 'headquarter',
+                                     'city', 'state', 'country', 'zip', 'phone', 'headquarter',
                                      'founded_date', 'organization_type', 'created_date', 'created_by']
 
     __organization_branch_fields = ['organization_id', 'address_line_1', 'address_line_2',
@@ -89,7 +89,7 @@ class OrganizationDao(BaseDao):
         organization['details'] = self.get_organization_details(id=org_id, connection=connection)
         organization['branches'] = self.get_organization_branches(id=org_id, connection=connection)
 
-        connection = self.__db_util.close_connection(connection, old_connection=old_connection)
+        self.__db_util.close_connection(connection, old_connection=old_connection)
 
         return organization
 

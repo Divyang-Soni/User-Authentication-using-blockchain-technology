@@ -18,6 +18,7 @@ class BaseService:
     _message = None
     _execution = None
     _user_id = 0
+    _organization_id = 0
 
     # initializing base service and putting params in it
     # checking the validity of session and setting the valid param

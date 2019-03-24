@@ -1,5 +1,5 @@
 ----------------------------- Organization details -----------------------------
-CREATE TABLE IF NOT EXISTS organization_details(id serial PRIMARY KEY, name varchar(100), address_line_1 varchar(200), address_line_2 varchar(50), city varchar(50), state varchar(50), country varchar(50), zip int, phone varchar(50), headquarter varchar(50), founded_date date, organization_type int, created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
+CREATE TABLE IF NOT EXISTS organization_details(id serial PRIMARY KEY, name varchar(100), address_line_1 varchar(200), address_line_2 varchar(50), city varchar(50), state varchar(50), country varchar(50), zip int, phone varchar(50), headquarter varchar(50), approved int, email varchar(200), founded_date date, organization_type int, created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
 
 CREATE TABLE IF NOT EXISTS organization_branch(id serial PRIMARY KEY, organization_id int NOT NULL, address_line_1 varchar(200), address_line_2 varchar(50), city varchar(50), state varchar(50), country varchar(50), zip int, phone varchar(15), created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
 

@@ -1,5 +1,5 @@
 from services.base_service import BaseService
-from dao.UserDao import UserDao
+from dao.user_dao import UserDao
 
 
 class UserService(BaseService):
@@ -28,3 +28,9 @@ class UserService(BaseService):
             self._message = 'success'
         else:
             self._message = 'failed'
+
+    def login(self):
+        user = UserDao(self._user_id).validate_user(data=self._params)
+
+
+

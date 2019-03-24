@@ -1,4 +1,6 @@
 from services.base_service import BaseService
+from dao.organization_dao import OrganizationDao
+from dao.user_dao import UserDao
 
 
 class OrganizationService(BaseService):
@@ -21,3 +23,17 @@ class OrganizationService(BaseService):
             func()
         else:
             raise Exception("Function is not implemented.")
+
+    def signup_organization(self):
+        if OrganizationDao(-1, -1).create_organization(data=self._params):
+            userData = {}
+            userData['given_name'] = self._params['name']
+            userData['last_name'] = 'Organization'
+            userData['dob'] = self._params['founded_date']
+            userData['email'] = self._params['email']
+            userData['password'] = self._params['name']
+            userData['user_type'] = self._params['1']
+            if UserDao(-1, -1).create_user(data=userData):
+                return 'success'
+        return 'failure'
+
