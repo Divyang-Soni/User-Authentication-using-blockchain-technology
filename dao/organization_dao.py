@@ -9,18 +9,17 @@ class OrganizationDao(BaseDao):
     __org_id = None
     __user_id = None
 
-    __organization_details_fields = ['name', 'address_line_1',
-                                     'city', 'state,country', 'zip', 'phone', 'headquarter',
-                                     'founded_date', 'organization_type', 'created_date',
-                                     'created_by', ]
+    __organization_details_fields = ['name', 'address_line_1', 'address_line_2'
+                                     'city', 'state','country', 'zip', 'phone', 'headquarter',
+                                     'founded_date', 'organization_type', 'created_date', 'created_by']
 
     __organization_branch_fields = ['organization_id', 'address_line_1', 'address_line_2',
                                     'city', 'state', 'country', 'zip',
                                     'phone', 'created_date', 'created_by']
 
-    def __init__(self, org_id):
+    def __init__(self, org_id, user_id):
         self.__org_id = org_id
-        self.__user_id = 1
+        self.__user_id = user_id
         BaseDao.__init__(self)
 
     def create_organization(self, data=None, model_instance=None, fields=None, old_connection=None):
@@ -41,18 +40,19 @@ class OrganizationDao(BaseDao):
         return self.insert_single_record('organization_branch', fields=fields, args_dict=data,
                                          connection=old_connection)
 
-    def get_organization_details(self, org_id=None, old_connection=None, fields='*'):
-        sql = self.create_select_query('organization_details',fields=fields)
-        params = [fields]
+    def get_organization_details(self, org_id=None, old_connection=None, fields='*', where='1=1'):
+        sql = self.create_select_query('organization_details', fields=fields, where=where)
+        params = []
         if not org_id:
             org_id = self.__org_id
         if not org_id:
-            return self.get_data('organization_details', fields=fields, connection=old_connection,
+            return self.get_data('organization_details', sql=sql,  fields=fields, connection=old_connection,
                                  model=OrganizationDetails)
         else:
             params.append(org_id)
-            where = 'id = %s'
-            return self.get_data('organization_details', fields=fields, where=where,
+            if where == '1=1':
+                where = ' id = %s'
+            return self.get_data('organization_details', sql=sql, fields=fields, where=where,
                                  args_dict=params, connection=old_connection,
                                  model=OrganizationDetails)
 

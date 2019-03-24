@@ -16,11 +16,14 @@ class BaseService:
     _is_valid = False
     _params = None
     _message = None
+    _execution = None
+    _user_id = 0
 
     # initializing base service and putting params in it
     # checking the validity of session and setting the valid param
-    def __init__(self, session, params):
+    def __init__(self, session, params, execution):
         self._params = params
+        self._execution = execution
         self.validate_session(session)
 
     # checking uid is available in session or not

@@ -4,8 +4,8 @@ from dao.UserDao import UserDao
 
 class UserService(BaseService):
 
-    def __init__(self, session, params):
-        super(UserService, self).__init__(session, params)
+    def __init__(self, session, params, execution):
+        super(UserService, self).__init__(session, params, execution)
 
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):
@@ -17,6 +17,12 @@ class UserService(BaseService):
 
     # a base method which will trigger the actual code
     def process_request(self):
+        if hasattr(self, self._execution):
+            func = getattr(self, self._execution)
+            func()
 
-        UserDao(0).create_user(self._params)
-        self._message = 'success'
+    def create_user(self):
+        if UserDao(self._user_id).create_user(self._params):
+            self._message = 'success'
+        else:
+            self._message = 'failed'

@@ -2,8 +2,8 @@ directory : "services"
 base_class : "BaseService"
 services:
   get_user_data :
-    module : "organzation_service"
-    class : "OrganizarionService"
+    module : "user_services"
+    class : "OrganizationService"
     type : ["GET", "POST"]
   create_user:
     module: "user_services"

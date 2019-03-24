@@ -1,10 +1,10 @@
 from services.base_service import BaseService
 
 
-class CompanyData(BaseService):
+class OrganizationService(BaseService):
 
-    def __init__(self, session, params):
-        pass
+    def __init__(self, session, params, execution):
+        super(OrganizationService, self).__init__(session, params, execution)
 
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):
