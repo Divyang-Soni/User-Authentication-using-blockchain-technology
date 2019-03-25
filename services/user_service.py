@@ -31,6 +31,9 @@ class UserService(BaseService):
 
     def login(self):
         user = UserDao(self._user_id).validate_user(data=self._params)
+        self._message = str(user)
+        return user
+
 
 
 

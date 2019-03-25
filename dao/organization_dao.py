@@ -9,7 +9,7 @@ class OrganizationDao(BaseDao):
     __org_id = None
     __user_id = None
 
-    __organization_details_fields = ['name', 'address_line_1', 'address_line_2'
+    __organization_details_fields = ['name', 'address_line_1', 'address_line_2', 'email',
                                      'city', 'state', 'country', 'zip', 'phone', 'headquarter',
                                      'founded_date', 'organization_type', 'created_date', 'created_by']
 
@@ -17,10 +17,10 @@ class OrganizationDao(BaseDao):
                                     'city', 'state', 'country', 'zip',
                                     'phone', 'created_date', 'created_by']
 
-    def __init__(self, org_id, user_id):
+    def __init__(self, org_id, user_id, file_path='./config/config.yaml'):
         self.__org_id = org_id
         self.__user_id = user_id
-        BaseDao.__init__(self)
+        super(OrganizationDao, self).__init__(file_path=file_path)
 
     def create_organization(self, data=None, model_instance=None, fields=None, old_connection=None):
         if model_instance:

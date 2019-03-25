@@ -2,6 +2,7 @@ from util import util
 from dao.base_dao import BaseDao
 from datetime import datetime
 
+
 class UserDao(BaseDao):
 
     __user_id = None

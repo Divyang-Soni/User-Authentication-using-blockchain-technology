@@ -2,10 +2,14 @@ directory : "services"
 base_class : "BaseService"
 services:
   signup_organization :
-    module : "user_services"
+    module : "organization_service"
     class : "OrganizationService"
     type : ["GET", "POST"]
   create_user :
-    module : "user_services"
+    module : "user_service"
     class : "UserService"
     type : ["GET", "POST"]
+  login :
+    module: "user_service"
+    class: "UserService"
+    type: ["GET", "POST"]

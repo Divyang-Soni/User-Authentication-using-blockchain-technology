@@ -10,11 +10,11 @@ class OrganizationService(BaseService):
 
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):
-        pass
+        return True
 
     # a base method which will be implemented in every service to parse params
     def parse_params(self):
-        pass
+        return True
 
     # a base method which will trigger the actual code
     def process_request(self):
@@ -25,15 +25,16 @@ class OrganizationService(BaseService):
             raise Exception("Function is not implemented.")
 
     def signup_organization(self):
-        if OrganizationDao(-1, -1).create_organization(data=self._params):
+        if OrganizationDao(1, 1).create_organization(data=self._params):
             userData = {}
             userData['given_name'] = self._params['name']
             userData['last_name'] = 'Organization'
             userData['dob'] = self._params['founded_date']
             userData['email'] = self._params['email']
             userData['password'] = self._params['name']
-            userData['user_type'] = self._params['1']
-            if UserDao(-1, -1).create_user(data=userData):
-                return 'success'
-        return 'failure'
+            userData['user_type'] = 1
+            if UserDao(1).create_user(data=userData):
+                self._message = 'success'
+                return
+        self._message = 'failure'
 
