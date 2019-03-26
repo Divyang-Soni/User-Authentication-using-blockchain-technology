@@ -17,7 +17,7 @@ class BaseDao(SQLUtil):
 
         return "INSERT INTO {} ({}) VALUES({})".format(table_name, str_fields, values)
 
-    def insert_records(self, table_name, fields, args_dict, connection = None):
+    def insert_records(self, table_name, fields, args_dict, connection=None):
         sql = self.create_insert_query(table_name, fields)
         return self.execute_query(sql, args_dict=args_dict, connection=connection)
 
@@ -56,7 +56,7 @@ class BaseDao(SQLUtil):
         str_fields = ','.join(l +"=%(" + l + ")s" for l in fields)
         return "UPDATE TABLE {} SET {} WHERE {}}".format(table_name, str_fields, where)
 
-    def update_single_record(self, table_name, fields, args_dict = None, where='1=1',connection=None):
+    def update_record(self, table_name, fields, args_dict = None, where='1=1',connection=None):
         sql = self.create_update_query(table_name, fields, where=where)
         return self.execute_query(sql, args_dict=args_dict, connection=connection)
 

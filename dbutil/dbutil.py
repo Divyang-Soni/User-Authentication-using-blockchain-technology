@@ -179,14 +179,21 @@ class SQLUtil:
                     cur = new_connection.execute(sql, args_dict)
                 else:
                     cur = new_connection.execute(sql)
+                keys = cur.keys()
+
                 # iterate through the cursor are put the records in output dict
                 for record in cur:
                     # if model is passed
+                    dict = {}
+                    for index, elem in enumerate(keys):
+                        dict[elem] = record[index]
+
                     if model:
-                        data = util.json_to_model(record, model())
+                        data = util.json_to_model(dict, model())
                         ret.append(data)
                     else:
-                       ret.append(record)
+                       ret.append(dict)
+
                 self.__db.close_connection(new_connection, old_connection=connection)
                 return ret
         except Exception as e:

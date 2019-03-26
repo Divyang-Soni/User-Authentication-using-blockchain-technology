@@ -4,12 +4,24 @@ services:
   signup_organization :
     module : "organization_service"
     class : "OrganizationService"
-    type : ["GET", "POST"]
+    type : ["POST"]
   create_user :
     module : "user_service"
     class : "UserService"
-    type : ["GET", "POST"]
+    type : ["POST"]
   login :
     module: "user_service"
     class: "UserService"
-    type: ["GET", "POST"]
+    type: ["POST"]
+  add_user_organization :
+    module: "user_service"
+    class: "UserService"
+    type: ["POST"]
+  save_user_profile :
+    module: "user_service"
+    class: "UserService"
+    type: ["POST"]
+  ger_user_info :
+    module: "user_service"
+    class: "UserService"
+    type: ["GET"]
