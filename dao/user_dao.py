@@ -77,7 +77,7 @@ class UserDao(BaseDao):
         if not data:
             return None
 
-        ret = {'user_info': None, 'user_organizations': []}
+        ret = {}
         sql = self.__user_all_details_sql
 
         if data.get('user_id', '') != '':
@@ -102,9 +102,9 @@ class UserDao(BaseDao):
         ret['user_info'] = user_info_arr
 
         if data.get('user_id', '') != '' and data.get('type') == 'full':
-            if len(user_info_arr) ==1:
+            if len(user_info_arr) == 1:
                 user_info = user_info_arr[0]
-
+                ret['user_info'] = user_info
                 if user_info and user_info.get('id'):
                     data1 = {'user_id': user_info.get('id')}
                     ret['user_organizations'] = self.get_user_organizations(data=data1)

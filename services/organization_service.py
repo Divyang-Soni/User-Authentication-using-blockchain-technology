@@ -5,8 +5,8 @@ from dao.user_dao import UserDao
 
 class OrganizationService(BaseService):
 
-    def __init__(self, session, params, execution):
-        super(OrganizationService, self).__init__(session, params, execution)
+    def __init__(self, session, params, execution, enforce_session):
+        super(OrganizationService, self).__init__(session, params, execution, enforce_session)
 
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):
@@ -22,7 +22,8 @@ class OrganizationService(BaseService):
             func = getattr(self, self._execution)
             func()
         else:
-            raise Exception("Function is not implemented.")
+            self._error = "Function is not implemented."
+            self._message = 'failed'
 
     def signup_organization(self):
         if OrganizationDao(1, 1).create_organization(data=self._params):

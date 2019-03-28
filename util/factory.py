@@ -30,7 +30,8 @@ class ServiceFactory:
                 return None
             module_instance = importlib.import_module(self._factory.directory+"."+service_cfg['module'])
             service_class = getattr(module_instance, service_cfg['class'])
-            return service_class
+            session_enforce = service_cfg.get('session', True)
+            return service_class, session_enforce
         except Exception as e:
             logging.error("Error while getting instance of service.\n{}".format(e))
-        return None
+        return None, True

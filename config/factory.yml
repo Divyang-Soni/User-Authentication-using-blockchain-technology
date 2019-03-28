@@ -5,6 +5,7 @@ services:
     module : "organization_service"
     class : "OrganizationService"
     type : ["POST"]
+    session: false
   create_user :
     module : "user_service"
     class : "UserService"
@@ -13,6 +14,7 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["POST"]
+    session: false
   add_user_organization :
     module: "user_service"
     class: "UserService"

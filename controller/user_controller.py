@@ -1,4 +1,4 @@
-from flask import Flask, request, Response, Blueprint, session
+from flask import Flask, request, Blueprint, session
 from flask import jsonify
 from util import factory
 from flask_cors import CORS, cross_origin
@@ -20,18 +20,21 @@ It will execute below steps
 @cross_origin(supports_credentials=True)
 def process_request(service):
     factory_instance = factory.ServiceFactory()
-    params = request.data
-    params = json.loads(params)
-    class_name = factory_instance.get_service_class(service, request.method)
+    params = json.loads(request.data.decode("utf-8"))
+    class_name, enforce_session = factory_instance.get_service_class(service, request.method)
     if class_name is None:
-        return "404"
+        return 'Not Found', 404
 
-    instance = class_name(session, params.to_dict(), service)
-    if instance.is_valid_session() \
-            and instance.validate_params()\
-            and instance.parse_params():
-        instance.process_request()
-    return instance.get_message()
+    instance = class_name(session, params, service, enforce_session)
+    status = 200
+    if not instance.is_valid_session():
+        status = 403
+    if instance.validate_params() and instance.parse_params():
+        err = instance.process_request()
+        if err:
+            status = 500
+    response = instance.get_response_object()
+    return json.dumps(response), status
 
 
 '''
@@ -50,4 +53,3 @@ This api call will be used to do health check for the DB server
 def check_health_db():
     msg = {'Message': 'DB is alive.'}
     return jsonify(msg)
-

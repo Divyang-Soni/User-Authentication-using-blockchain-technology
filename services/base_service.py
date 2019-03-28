@@ -16,26 +16,32 @@ class BaseService:
     _is_valid = False
     _params = None
     _message = None
+    _error = None
+    _response_data = None
     _execution = None
+
     _user_id = 0
-    _organization_id = 0
 
     # initializing base service and putting params in it
     # checking the validity of session and setting the valid param
-    def __init__(self, session, params, execution):
+    def __init__(self, session, params, execution, enforce_session):
         self._params = params
         self._execution = execution
-        self.validate_session(session)
+        self.validate_session(session, enforce_session)
 
     # checking uid is available in session or not
     # TODO : This method needs to be changed with proper checking
-    def validate_session(self, session):
-        self._is_valid = True
-        return True
-        # if "uid" not in session:
-        #     self._is_valid =  False
-        # else:
-        #     self._is_valid = True
+    def validate_session(self, session, enforce_session):
+        if not enforce_session:
+            self._is_valid = True
+            return
+
+        if "uid" not in session:
+            self._is_valid = False
+            self._message = 'Unauthorised'
+        else:
+            self._user_id = session['uid']
+            self._is_valid = True
 
     # public method to check that the session is valid or not
     def is_valid_session(self):
@@ -51,8 +57,8 @@ class BaseService:
                 return False
         return True
 
-    def get_message(self):
-        return self._message
+    def get_response_object(self):
+        return {'message': self._message, 'error': self._error, 'data': self._response_data}
 
     # a base method which will internally call validate method with required params for each service
     @abstractmethod
