@@ -36,7 +36,7 @@ class UserDao(BaseDao):
             fields = self.__user_creation_fields
         data['created_by'] = self.__user_id
         data['created_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        return self.insert_record('user_basic', fields=fields, args_dict=data, connection=old_connection)
+        return self.insert_records('user_basic', fields=fields, args_dict=data, connection=old_connection)
 
     def validate_user(self, data=None, fields=None):
         if not data:
