@@ -1,0 +1,18 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor admin
+
+rectangle "Admin Use Case"{
+    admin -- (Approve Organization)
+    admin -- (Remove/Revoke\nOrganization)
+    admin -- (Remove flagged\nrecord)
+    admin -- (Delete User)
+    admin -- (Login)
+    admin -- (Logout)
+    admin -- (Remove User\nfrom Organization)
+    admin -- (Assign/Revoke/Update\nRole to User)
+    admin -- (View user's\ndata\nfor approved\nrequest)
+}
+@enduml

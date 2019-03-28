@@ -1,0 +1,32 @@
+@startuml
+actor Admin
+actor Organization
+
+Organization -> OrganizationController : Register Organization
+OrganizationController -> BaseService : Fetch respective service
+OrganizationController <-- BaseService
+OrganizationController -> OrganizationService : Create Organization
+OrganizationService -> OrganizationDAO : Add Organization for Admin Approval
+OrganizationService <-- OrganizationDAO
+OrganizationController <-- OrganizationService
+Organization <-- OrganizationController : Response
+
+Admin -> AdminController : Approve/Decline Organization Creation Request
+AdminController -> BaseService : Fetch respective service
+AdminController <-- BaseService
+alt Approve Organization
+    AdminController -> AdminService : Approve Organization
+    AdminService -> AdminDAO : Approve Organization
+    AdminService <-- AdminDAO
+    AdminController <-- AdminService
+else Decline Organization
+    AdminController -> AdminService : Decline Organization
+    AdminService -> AdminDAO : Decline Organization
+    AdminService <-- AdminDAO
+    AdminController <-- AdminService
+end
+Admin <- AdminController : Response
+
+
+
+@enduml

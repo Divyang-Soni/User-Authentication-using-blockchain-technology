@@ -1,0 +1,5 @@
+flask==1.0.2
+PyYAML
+psycopg2
+sqlalchemy
+flask_cors

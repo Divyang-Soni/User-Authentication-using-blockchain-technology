@@ -1,0 +1,34 @@
+@startuml
+actor User
+actor organization
+
+organization -> OrganizationController : Request User's Record
+OrganizationController -> BaseService : Fetch respective service
+OrganizationController <-- BaseService : Fetch respective service
+OrganizationController -> OrganizationService : Request User's Record
+OrganizationService -> OrganizationServiceDAO : Generate Request
+OrganizationService -> MailService : Sends request for viewing profile to user
+MailService -> User : Send Email
+MailService <-- User
+OrganizationService <-- MailService
+
+OrganizationController <-- OrganizationService
+organization <-- OrganizationController : Response
+
+User -> UserController : View Organization's request to view profile
+UserController -> BaseService :  Fetch Respective Service
+UserController <-- BaseService
+
+alt Grant Profile View
+    UserController -> UserService : Grant Request
+    UserService -> UserDAO  : Update database granting organization request
+    UserService <-- UserDAO
+    UserController <-- UserService
+else Decline Profile view request
+    UserController -> UserService : Decline Request
+    UserService -> UserDAO  : Update database revoking organization request
+    UserService <-- UserDAO
+    UserController <-- UserService
+end
+User <-- UserController
+@enduml

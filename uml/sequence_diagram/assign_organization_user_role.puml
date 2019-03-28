@@ -1,0 +1,30 @@
+@startuml
+actor OrganizationAdmin
+
+OrganizationAdmin -> OrganizationController: Add New User
+OrganizationController -> BaseService: Fetch respective service
+OrganizationController <-- BaseService
+OrganizationController -> OrganizationService: Add User
+OrganizationService -> OrganizationDAO: Add User
+OrganizationService <-- OrganizationDAO
+OrganizationController <-- OrganizationService
+OrganizationAdmin <-- OrganizationController
+
+OrganizationAdmin -> OrganizationController: Assign New Role
+OrganizationController -> BaseService: Fetch respective service
+OrganizationController <-- BaseService
+OrganizationController -> OrganizationService: Assign New Role
+OrganizationService -> OrganizationDAO: Add New Role
+OrganizationService <-- OrganizationDAO
+OrganizationController <-- OrganizationService
+OrganizationAdmin <-- OrganizationController
+
+OrganizationAdmin -> OrganizationController: Delete Role
+OrganizationController -> BaseService: Fetch respective service
+OrganizationController <-- BaseService
+OrganizationController -> OrganizationService: Delete Role
+OrganizationService -> OrganizationDAO: Delete Role
+OrganizationService <-- OrganizationDAO
+OrganizationController <-- OrganizationService
+OrganizationAdmin <- OrganizationController: Response
+@enduml

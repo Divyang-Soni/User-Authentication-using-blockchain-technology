@@ -1,0 +1,27 @@
+@startuml
+actor Organization
+
+Organization -> OrganizationController: Search user
+OrganizationController -> OrganizationService: Search
+OrganizationService -> OrganizationDAO: Search
+
+alt User found
+    OrganizationService <- OrganizationDAO: Found User
+    OrganizationController <-- OrganizationService
+    Organization <- OrganizationController: Response Found User
+else User Not Found
+    OrganizationService <- OrganizationDAO: Not Found
+    OrganizationController <-- OrganizationService
+    Organization <- OrganizationController: Response Not Found
+    Organization -> OrganizationController: Add User
+    OrganizationController -> OrganizationService: Add User
+    OrganizationService -> OrganizationDAO: Add User
+    OrganizationService <-- OrganizationDAO
+    OrganizationController <-- OrganizationService
+    Organization <- OrganizationController: Response
+end
+
+
+
+
+@enduml

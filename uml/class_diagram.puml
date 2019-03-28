@@ -1,0 +1,231 @@
+@startuml
+
+package controller{
+    class UserController
+    class OrganizationController
+    class AdminController
+}
+
+package factory{
+    class ServiceFactory{
+        __initialize_factory()
+        get_base_class_name()
+        get_service_class()
+    }
+}
+
+package model{
+    class OrganizationDetail{
+        str id,
+        str name,
+        str address_line_1,
+        str address_line_2,
+        str city,
+        str state,
+        str country,
+        int zip,
+        str phone,
+        str headquarter,
+        date founded_date,
+        int organization_type,
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag,
+        int deleted_by
+    }
+
+    class UserProfile{
+        str id,
+        int user_id,
+        char gender,
+        str ethinicity,
+        str address_line_1,
+        str address_line_2,
+        str city,
+        str state,
+        str country_of_residence,
+        str country_of_citizenship,
+        int zip,
+        str phone,
+        str profile_photo
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag,
+        int deleted_by;
+    }
+
+    class UserBasic{
+        str id,
+        str given_name,
+        str last_name,
+        date dob,
+        str email,
+        str password,
+        int user_type,
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag ,
+        int deleted_by
+    }
+
+    class OrganizationBranch{
+        str id ,
+        int organization_id,
+        str address_line_1,
+        str address_line_2 ,
+        str city,
+        str state,
+        str country,
+        int zip,
+        str phone,
+        date created_date,
+        int created_by,
+        date modified_date,
+        int modified_by,
+        int delete_flag,
+        int deleted_by
+    }
+
+    class UserVerify{
+           str id ,
+           int user_id ,
+           str verification_id,
+           str verification_type,
+           date created_date,
+           int created_by,
+           date modified_date,
+           int modified_by,
+           int delete_flag,
+           int deleted_by
+    }
+
+    class UserType{
+        str id,
+        str type,
+        int delete_flag
+    }
+
+    class UserOrganizationMapping{
+        str id,
+        int organization_id,
+        int user_id,
+        int user_role,
+        int delete_flag
+    }
+
+    class VerificationType{
+        str id,
+        str type,
+        int delete_flag
+    }
+
+
+}
+
+package services{
+    class BaseService{
+        validate_session(session)
+        is_valid_session()
+        validate(required)
+        get_message()
+        validate_params()
+        parse_params()
+        process_request()
+    }
+    class OrganizationService{
+        get_organization_data(id)
+        add_user_in_organizarion(params)
+        add_role_for_user_organization(params)
+        register_organization(params)
+    }
+    class UserService{
+        view_data(params)
+        flag_incorrect_data(params)
+    }
+    class AdminService{
+        approve_organization_registration(params)
+        remove_flagged_data(params)
+    }
+}
+
+package dao{
+    class OrganizationDAO{
+        insert()
+        update()
+        delete()
+    }
+    class UserDAO{
+        insert()
+        update()
+        delete()
+    }
+    class AdminDAO{
+        insert()
+        update()
+        delete()
+    }
+}
+
+package dbutil{
+    class SQLUtil{
+        fetch_data(sql, args_dict, connection, model),
+        execute_query(sql, args_dict, connection),
+        execute_query_multiple(sql, args_dict, connection)
+    }
+    class DBUtil{
+        __get_database_config(config_file)
+        __create_engine()
+        is_engine_created()
+        __creator()
+        get_connection(old_connection)
+        close_connection(connection, old_connection)
+    }
+}
+
+BaseService <|-- UserService
+BaseService <|-- OrganizationService
+BaseService <|-- AdminService
+
+UserController -* ServiceFactory
+OrganizationController -* ServiceFactory
+AdminController -* ServiceFactory
+
+
+UserController "1" --* "1" BaseService
+OrganizationController "1" --* "1" BaseService
+AdminController "1" --* "1" BaseService
+
+UserService "1" -- "1" UserBasic
+UserService "1" -- "1" UserProfile
+UserService "1" -- "1" UserVerify
+UserService "1" -- "1" UserType
+
+OrganizationService "1" -- "0..*" OrganizationDetail
+OrganizationService "1" -- "0..*" OrganizationBranch
+OrganizationService "1" -- "0..*" UserOrganizationMapping
+OrganizationService "1" -- "0..*" UserBasic
+OrganizationService "1" -- "0..*" UserProfile
+AdminService "1" -- "0..*" UserBasic
+AdminService "1" -- "0..*" UserProfile
+AdminService "1" -- "0..*" OrganizationDetail
+AdminService "1" -- "0..*" UserVerify
+AdminService "1" -- "0..*" UserType
+AdminService "1" -- "0..*" UserOrganizationMapping
+AdminService "1" -- "0..*" VerificationType
+
+AdminService "1" - "1" AdminDAO
+OrganizationService "1" - "0..*" OrganizationDAO
+UserService "1" - "1" UserDAO
+
+OrganizationDAO "1" -- "1" SQLUtil
+UserDAO "1" -- "1" SQLUtil
+AdminDAO "1" -- "1" SQLUtil
+
+SQLUtil "1" -- "1" DBUtil
+@enduml

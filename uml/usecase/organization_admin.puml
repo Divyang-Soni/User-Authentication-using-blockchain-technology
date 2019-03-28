@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor organization_admin
+actor organization_user
+
+rectangle "Organization UseCase"{
+    organization_admin -- (Signup\nOrganization)
+    organization_admin -- (Login)
+    organization_admin -- (Edit Organization\n Details)
+    organization_admin -- (Add User\nin Organization)
+    organization_admin -- (Remove User\nfrom Organization)
+    organization_admin -- (Assign Role\nto User)
+    organization_admin -- (Revoke Role\nof User)
+    organization_admin -- (Update Role\nof User)
+    organization_admin -- (Flag user/data)
+    organization_admin -- (Request access\nfor viewing\nuser profile)
+    organization_admin -- (View user's\ndata\nfor approved\nrequest)
+    organization_admin -- (Insert user related data)
+
+    (Request access\nfor viewing\nuser profile) -- organization_user
+    (Flag user data) -- organization_user
+    (View user's\ndata\nfor approved\nrequest) -- organization_user
+    (Insert user related data) -- organization_user
+}
+@enduml

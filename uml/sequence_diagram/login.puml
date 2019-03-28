@@ -1,0 +1,11 @@
+@startuml
+actor user
+user -> controller : REST Call
+controller -> BaseService : Fetch relevant service
+controller <-- BaseService
+controller -> UserService : login
+UserService -> UserDao : verify credentials
+UserService <- UserDao
+controller <-- UserService :
+user <- controller : Response
+@enduml
