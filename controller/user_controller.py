@@ -2,6 +2,7 @@ from flask import Flask, request, Response, Blueprint, session
 from flask import jsonify
 from util import factory
 from flask_cors import CORS, cross_origin
+import json
 
 user = Blueprint('user_controller', __name__, template_folder='')
 
@@ -19,7 +20,8 @@ It will execute below steps
 @cross_origin(supports_credentials=True)
 def process_request(service):
     factory_instance = factory.ServiceFactory()
-    params = request.values
+    params = request.data
+    params = json.loads(params)
     class_name = factory_instance.get_service_class(service, request.method)
     if class_name is None:
         return "404"

@@ -16,7 +16,7 @@ class UserDao(BaseDao):
 
     __user_login_fields = ['id', 'given_name', 'last_name', 'user_type']
 
-    __user_organizations_fields = ['organization_id' , 'user_role']
+    __user_organizations_fields = ['organization_id', 'user_role']
 
     __user_all_details_sql = "SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
                              "up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
