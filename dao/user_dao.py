@@ -20,6 +20,8 @@ class UserDao(BaseDao):
 
     __user_type_fields = ['id', 'type']
 
+    __user_name_exist_sql = "SELECT id FROM user_basic where last_name = %(last_name)s and given_name = %(given_name)s)"
+
     __user_all_details_sql = "SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
                              "up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
                              "up.country_of_citizenship, up.zip, up.phone " \
@@ -146,5 +148,8 @@ class UserDao(BaseDao):
                                    fields=self.__user_type_fields, where=where)
         return user_types
 
-    def is_user_exist(self, user):
+    def is_duplicate_user(self, data):
+        user = self.fetch_data(sql=self.__user_name_exist_sql, args_dict=data)
+        if user and len(user) > 0:
+            return True
         return False

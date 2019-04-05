@@ -192,7 +192,7 @@ class SQLUtil:
                         data = util.json_to_model(dict, model())
                         ret.append(data)
                     else:
-                       ret.append(dict)
+                        ret.append(dict)
 
                 self.__db.close_connection(new_connection, old_connection=connection)
                 return ret

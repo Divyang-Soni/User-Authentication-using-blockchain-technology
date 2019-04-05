@@ -36,3 +36,7 @@ services:
     class : "OrganizationService"
     type : ["GET"]
     session: false
+  is_duplicate_user:
+    module: "user_service"
+    class: "UserService"
+    type: ["GET"]

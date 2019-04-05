@@ -80,3 +80,11 @@ class UserService(BaseService):
             self._response_data = json.dumps(info)
         else:
             self._message = 'failed'
+
+    def is_duplicate_user(self):
+        info = self.__UserDao.is_duplicate_user(self._params)
+        if info is not None:
+            self._message = 'success'
+            self._response_data = info
+        else:
+            self._message = 'failed'
