@@ -10,7 +10,7 @@ class BaseDao(SQLUtil):
     def create_insert_query(table_name, fields):
 
         if not fields or type(fields) is not type([]):
-            raise BaseException("Fileds must be a dictonary object")
+            raise BaseException("Fields must be a dictionary object")
 
         values = ','.join("%("+l+")s" for l in fields)
         str_fields = ','.join(fields)

@@ -47,8 +47,15 @@ class OrganizationService(BaseService):
         user_data['password'] = self._params['name']
         user_data['user_type'] = 1
 
+        user_dao = UserDao(self._user_id)
+
+        if user_dao.is_duplicate_user(user_data):
+            self._message = 'failure'
+            self._error = "Organization with name {} is already exist.".format(self._params['name'])
+            return
+
         if self.__dao.create_organization(data=self._params):
-            if UserDao(self._user_id).create_user(data=user_data):
+            if user_dao.create_user(data=user_data):
                 self._message = 'success'
                 return
         self._message = 'failure'
