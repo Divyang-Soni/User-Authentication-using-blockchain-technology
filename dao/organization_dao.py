@@ -17,6 +17,10 @@ class OrganizationDao(BaseDao):
                                     'city', 'state', 'country', 'zip',
                                     'phone', 'created_date', 'created_by']
 
+    _organization_details_update_fields = ['name', 'address_line_1', 'address_line_2', 'email',
+                                           'city', 'state', 'country', 'zip', 'phone', 'headquarter',
+                                           'organization_type', 'updated_date', 'updated_by']
+
     __organization_type_fields = ['id', 'type']
 
     def __init__(self, org_id, user_id, file_path='./config/config.yaml'):
@@ -28,11 +32,18 @@ class OrganizationDao(BaseDao):
         if model_instance:
             data = util.model_to_json(model_instance)
         if not fields:
-            fields = self.__organization_details_fields
-            data['created_by'] = self.__user_id
-            data['created_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        return self.insert_single_record('organization_details', fields=fields, args_dict=data,
-                                         connection=old_connection)
+            if data.get('organization_id', '') != '':
+                fields = self._organization_details_update_fields
+                data['updated_by'] = self.__user_id
+                data['updated_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                return self.insert_single_record('organization_details', fields=fields, args_dict=data,
+                                                 connection=old_connection)
+            else:
+                fields = self.__organization_details_fields
+                data['created_by'] = self.__user_id
+                data['created_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                return self.insert_single_record('organization_details', fields=fields, args_dict=data,
+                                                 connection=old_connection)
 
     def add_organization_branch(self, data=None, model_instance=None, fields=None, old_connection=None):
         if model_instance:

@@ -38,8 +38,9 @@ class UserDao(BaseDao):
             data = util.model_to_json(model_instance)
         if not fields:
             fields = self.__user_creation_fields
+        data['password'] = '12345'
         data['created_by'] = self.__user_id
-        data['created_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        data['created_date'] = str(datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
         return self.insert_records('user_basic', fields=fields, args_dict=data, connection=old_connection)
 
     def validate_user(self, data=None, fields=None):
@@ -121,12 +122,13 @@ class UserDao(BaseDao):
 
     def get_user_organizations(self, data=None):
         where = " user_id =  %(user_id)s and delete_flag = 0"
-        user_organizations = self.get_data(table_name='user_organization_mapping', fields=self.__user_organizations_fields, data=data, where=where)
+        user_organizations = self.get_data(table_name='user_organization_mapping',
+                                           fields=self.__user_organizations_fields, data=data, where=where)
         return user_organizations
 
     def is_user_admin(self, user_id):
         data = {'user_id': user_id}
-        user = self.fetch_data(sql=self.__user_type_sql,args_dict=data)
+        user = self.fetch_data(sql=self.__user_type_sql, args_dict=data)
         if user and len(user) > 0:
             user = user[0]
             user_types = self.get_user_types()
@@ -141,7 +143,7 @@ class UserDao(BaseDao):
     def get_user_types(self):
         where = " delete_flag = 0"
         user_types = self.get_data(table_name='user_type',
-                                           fields=self.__user_type_fields, where=where)
+                                   fields=self.__user_type_fields, where=where)
         return user_types
 
     def is_user_exist(self, user):
