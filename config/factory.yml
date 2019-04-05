@@ -27,3 +27,7 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["GET"]
+  get_user_types:
+    module: "user_service"
+    class: "UserService"
+    type: ["GET"]

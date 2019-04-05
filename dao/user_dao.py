@@ -144,6 +144,5 @@ class UserDao(BaseDao):
                                            fields=self.__user_type_fields, where=where)
         return user_types
 
-    def is_user_exist(self):
-
-
+    def is_user_exist(self, user):
+        return False
