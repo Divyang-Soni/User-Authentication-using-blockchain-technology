@@ -31,3 +31,8 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["GET"]
+  get_organization_types:
+    module : "organization_service"
+    class : "OrganizationService"
+    type : ["GET"]
+    session: false

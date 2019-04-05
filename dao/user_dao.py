@@ -11,7 +11,7 @@ class UserDao(BaseDao):
                               'dob', 'email', 'password', 'user_type', 'created_date', 'created_by',
                               ]
 
-    __user_profile_fields = ['user_id' , 'gender', 'ethnicity', 'address_line_1', 'address_line_2', 'city', 'state',
+    __user_profile_fields = ['user_id', 'gender', 'ethnicity', 'address_line_1', 'address_line_2', 'city', 'state',
                              'country_of_residence', 'country_of_citizenship', 'zip', 'phone']
 
     __user_login_fields = ['id', 'given_name', 'last_name', 'user_type']

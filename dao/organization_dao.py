@@ -17,6 +17,8 @@ class OrganizationDao(BaseDao):
                                     'city', 'state', 'country', 'zip',
                                     'phone', 'created_date', 'created_by']
 
+    __organization_type_fields = ['id', 'type']
+
     def __init__(self, org_id, user_id, file_path='./config/config.yaml'):
         self.__org_id = org_id
         self.__user_id = user_id
@@ -67,8 +69,7 @@ class OrganizationDao(BaseDao):
         where = 'organization_id = %s'
         return self.get_data('organization_branch', fields=fields, where=where,
                              args_dict=params, connection=old_connection,
-                             model= OrganizationBranch)
-
+                             model=OrganizationBranch)
 
     '''
     This function is used to get all information about an organization which includes
@@ -85,7 +86,7 @@ class OrganizationDao(BaseDao):
         if not org_id:
             raise Exception("No Organization Id found to fetch details.")
 
-        organization = {}
+        organization = dict
         organization['details'] = self.get_organization_details(id=org_id, connection=connection)
         organization['branches'] = self.get_organization_branches(id=org_id, connection=connection)
 
@@ -93,6 +94,10 @@ class OrganizationDao(BaseDao):
 
         return organization
 
-
+    def get_organization_types(self):
+        where = " delete_flag = 0"
+        organization_types = self.get_data(table_name='organization_type',
+                                           fields=self.__organization_type_fields, where=where)
+        return organization_types
 
 

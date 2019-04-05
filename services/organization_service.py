@@ -1,6 +1,8 @@
 from services.base_service import BaseService
 from dao.organization_dao import OrganizationDao
 from dao.user_dao import UserDao
+import json
+import traceback
 
 
 class OrganizationService(BaseService):
@@ -23,10 +25,17 @@ class OrganizationService(BaseService):
     def process_request(self):
         if hasattr(self, self._execution):
             func = getattr(self, self._execution)
-            func()
+            try:
+                func()
+            except Exception as e:
+                traceback.format_exc(e)
+                self._message = 'failed'
+                self._error = e.__str__()
+                return e
         else:
             self._error = "Function is not implemented."
             self._message = 'failed'
+            return None
 
     def signup_organization(self):
 
@@ -44,5 +53,12 @@ class OrganizationService(BaseService):
                 return
         self._message = 'failure'
 
+    def get_organization_types(self):
+        info = self.__dao.get_organization_types()
+        if info and len(info) > 0:
+            self._message = 'success'
+            self._response_data = json.dumps(info)
+        else:
+            self._message = 'failed'
 
 
