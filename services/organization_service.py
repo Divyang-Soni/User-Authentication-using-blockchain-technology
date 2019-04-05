@@ -5,8 +5,11 @@ from dao.user_dao import UserDao
 
 class OrganizationService(BaseService):
 
+    __dao = None
+
     def __init__(self, session, params, execution, enforce_session):
         super(OrganizationService, self).__init__(session, params, execution, enforce_session)
+        self.__dao = OrganizationDao(self._user_id, self._organization_id)
 
     # a base method which will internally call validate method with required params for each service
     def validate_params(self):
@@ -26,16 +29,20 @@ class OrganizationService(BaseService):
             self._message = 'failed'
 
     def signup_organization(self):
-        if OrganizationDao(1, 1).create_organization(data=self._params):
-            userData = {}
-            userData['given_name'] = self._params['name']
-            userData['last_name'] = 'Organization'
-            userData['dob'] = self._params['founded_date']
-            userData['email'] = self._params['email']
-            userData['password'] = self._params['name']
-            userData['user_type'] = 1
-            if UserDao(1).create_user(data=userData):
+
+        user_data = dict
+        user_data['given_name'] = self._params['name']
+        user_data['last_name'] = 'Organization'
+        user_data['dob'] = self._params['founded_date']
+        user_data['email'] = self._params['email']
+        user_data['password'] = self._params['name']
+        user_data['user_type'] = 1
+
+        if self.__dao.create_organization(data=self._params):
+            if UserDao(self._user_id).create_user(data=user_data):
                 self._message = 'success'
                 return
         self._message = 'failure'
+
+
 

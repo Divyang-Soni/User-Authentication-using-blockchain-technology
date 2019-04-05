@@ -1,4 +1,4 @@
-from util import util
+from util import util, constants
 from dao.base_dao import BaseDao
 from datetime import datetime
 
@@ -18,12 +18,16 @@ class UserDao(BaseDao):
 
     __user_organizations_fields = ['organization_id', 'user_role']
 
+    __user_type_fields = ['id', 'type']
+
     __user_all_details_sql = "SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
                              "up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
                              "up.country_of_citizenship, up.zip, up.phone " \
                              "from  user_basic ub " \
                              "JOIN user_profile up ON ub.id = up.user_id" \
                              "where ub.delete_flag = 0 and up.delete_flag = 0"
+
+    __user_type_sql = "SELECT user_type from user_basic where id = %(user_id)s"
 
     def __init__(self, user_id, file_path='./config/config.yaml'):
         self.__user_id = user_id
@@ -81,13 +85,18 @@ class UserDao(BaseDao):
         sql = self.__user_all_details_sql
 
         if data.get('user_id', '') != '':
+            if data.get('user_id') == 'current':
+                data['user_id'] = self.__user_id
+            elif not self.is_user_admin(self.__user_id):
+                raise Exception("Operation is not permitted for this user")
+
             sql = sql + " and ub.id like  %(user_id)s%"
         else:
             if data.get('email', '') != '':
-                sql= sql + " and ub.email like  %(email)s%"
+                sql = sql + " and ub.email like  %(email)s%"
 
             if data.get('given_name', '') != '':
-                sql= sql + " and ub.given_name = %(given_name)s%"
+                sql = sql + " and ub.given_name = %(given_name)s%"
 
             if data.get('last_name') == '':
                 sql = sql + " and ub.last_name = %(last_name)s%"
@@ -113,14 +122,28 @@ class UserDao(BaseDao):
     def get_user_organizations(self, data=None):
         where = " user_id =  %(user_id)s and delete_flag = 0"
         user_organizations = self.get_data(table_name='user_organization_mapping', fields=self.__user_organizations_fields, data=data, where=where)
-        return  user_organizations
+        return user_organizations
 
+    def is_user_admin(self, user_id):
+        data = {'user_id': user_id}
+        user = self.fetch_data(sql=self.__user_type_sql,args_dict=data)
+        if user and len(user) > 0:
+            user = user[0]
+            user_types = self.get_user_types()
+            for utype in user_types:
+                if user.user_type == utype.id:
+                    if utype.type == constants.USER_ADMIN or\
+                     utype.type == constants.USER_ORGANIZATION_ADMIN or\
+                     utype.type == constants.USER_ORGANIZATION_USER:
+                        return True
+        return False
 
+    def get_user_types(self):
+        where = " delete_flag = 0"
+        user_types = self.get_data(table_name='user_type',
+                                           fields=self.__user_type_fields, where=where)
+        return user_types
 
-
-
-
-
-
+    def is_user_exist(self):
 
 

@@ -49,6 +49,7 @@ class UserService(BaseService):
             self._message = 'success'
             self._response_data = json.dumps(user[0])
             session['uid'] = user[0].get('id')
+            session['type'] = user[0].get('user_type')
         else:
             self._message = 'failed'
 
@@ -67,6 +68,14 @@ class UserService(BaseService):
     def ger_user_info(self):
         info = self.__UserDao.ger_user_info(data=self._params)
         if info and info != {}:
+            self._message = 'success'
+            self._response_data = json.dumps(info)
+        else:
+            self._message = 'failed'
+
+    def get_user_types(self):
+        info = self.__UserDao.get_user_types()
+        if info and len(info) > 0:
             self._message = 'success'
             self._response_data = json.dumps(info)
         else:
