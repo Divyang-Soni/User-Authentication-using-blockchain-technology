@@ -17,3 +17,5 @@ database:
   database_port : ${DATABASE_PORT}
   pool_size : 10
   pool_timeout : 30
+encryption:
+  key : ${ENCRYPTION_KEY}
