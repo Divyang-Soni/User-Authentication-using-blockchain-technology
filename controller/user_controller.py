@@ -21,7 +21,7 @@ It will execute below steps
 def process_request(service):
     factory_instance = factory.ServiceFactory()
     try:
-        if request.methos == 'GET':
+        if request.method == 'GET':
             params = json.loads(json.dumps(request.form).decode("utf-8"))
         else:
             params = json.loads(request.data.decode("utf-8"))
