@@ -31,6 +31,10 @@ class UserDao(BaseDao):
 
     __user_type_sql = "SELECT user_type from user_basic where id = %(user_id)s"
 
+    __user_types = None
+
+    __current_user_type = None
+
     def __init__(self, user_id, file_path='./config/config.yaml'):
         self.__user_id = user_id
         super(UserDao, self).__init__(file_path=file_path)
@@ -90,7 +94,7 @@ class UserDao(BaseDao):
         if data.get('user_id', '') != '':
             if data.get('user_id') == 'current':
                 data['user_id'] = self.__user_id
-            elif not self.is_user_admin(self.__user_id):
+            elif self.is_normal_user(self.__user_id):  # user is not allowed to access information
                 raise Exception("Operation is not permitted for this user")
 
             sql = sql + " and ub.id like  %(user_id)s%"
@@ -110,7 +114,13 @@ class UserDao(BaseDao):
             if data.get('zip', '') == '':
                 sql = sql + " and up.zip = %(zip)s%"
 
+        if data['user_id'] != self.__user_id:
+            if not self.is_user_admin(self.__user_id):
+                sql = sql + " and ub.user_type <> {}".format(constants.USER_ORGANIZATION_ADMIN)
+                sql = sql + " and ub.user_type <> {}".format(constants.USER_ADMIN)
+
         user_info_arr = self.fetch_data(sql=sql, data=data)
+
         ret['user_info'] = user_info_arr
 
         if data.get('user_id', '') != '' and data.get('type') == 'full':
@@ -129,16 +139,33 @@ class UserDao(BaseDao):
         return user_organizations
 
     def is_user_admin(self, user_id):
-        data = {'user_id': user_id}
-        user = self.fetch_data(sql=self.__user_type_sql, args_dict=data)
-        if user and len(user) > 0:
-            user = user[0]
-            user_types = self.get_user_types()
+        return self.validate_user_type(user_id, constants.USER_ADMIN)
+
+    def is_user_organization_admin(self, user_id):
+        return self.validate_user_type(user_id, constants.USER_ORGANIZATION_ADMIN)
+
+    def is_normal_user(self, user_id):
+        return self.validate_user_type(user_id, constants.USER_NORM)
+
+    def is_user_organization_user(self, user_id):
+        return self.validate_user_type(user_id, constants.USER_ORGANIZATION_USER)
+
+    def validate_user_type(self, user_id, desired_user_type):
+        if not self.__current_user_type:
+            data = {'user_id': user_id}
+            user = self.fetch_data(sql=self.__user_type_sql, args_dict=data)
+
+            if user and len(user) > 0:
+                self.__current_user_type = user[0].user_type
+            user_type = self.__current_user_type
+
+            if not self.__user_types:
+                self.__user_types = self.get_user_types()
+            user_types = self.__user_types
+
             for utype in user_types:
-                if user.user_type == utype.id:
-                    if utype.type == constants.USER_ADMIN or\
-                     utype.type == constants.USER_ORGANIZATION_ADMIN or\
-                     utype.type == constants.USER_ORGANIZATION_USER:
+                if user_type == utype.id:
+                    if utype.type == desired_user_type:
                         return True
         return False
 

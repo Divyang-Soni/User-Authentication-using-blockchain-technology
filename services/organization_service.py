@@ -39,7 +39,7 @@ class OrganizationService(BaseService):
 
     def signup_organization(self):
 
-        user_data = dict
+        user_data = dict()
         user_data['given_name'] = self._params['name']
         user_data['last_name'] = 'Organization'
         user_data['dob'] = self._params['founded_date']
