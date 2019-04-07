@@ -10,8 +10,19 @@ LOG_FORMAT = '%(asctime)-15s %(filename)s %(funcName)s line %(lineno)d %(levelna
 pattern = re.compile(r"\${(.*?)\}")
 
 
+# constructor that the parser will invoke for !envx
+def envx_constructor(loader, node):
+    value = loader.construct_scalar(node)
+    env_var = pattern.match(value).groups()[0]
+    return os.environ.get(env_var, '')
+
+
 # now define a custom tag ( say pathex ) and associate the regex pattern we defined
-yaml.add_implicit_resolver("!pathex", pattern)
+yaml.add_implicit_resolver("!envx", pattern)
+
+
+# 'register' the constructor so that the parser will invoke 'envx_constructor' for each node '!pathex'
+yaml.add_constructor('!envx', envx_constructor)
 
 
 def parse_config(path="./config/config.yaml"):

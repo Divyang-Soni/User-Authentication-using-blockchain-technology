@@ -1,8 +1,8 @@
 server:
   port: 8080
 mail_server:
-  server_address: smtp.gmail.com
-  port: 465
+  server_address: ${EMAIL_SERVER}
+  port: ${EMAIL_PORT}
   email: ${EMAIL_ADDRESS}
   password: ${EMAIL_PASSWORD}
 aws_rds:
@@ -10,10 +10,10 @@ aws_rds:
   access_key_id: xxxx
   secret_access_key: xxxx
 database:
-  database_name :  cmpe295
-  user_name : postgres
-  password : root
-  database_host : localhost
-  database_port : 5432
+  database_name :  ${DATABASE_NAME}
+  user_name : ${DATABASE_USER_NAME}
+  password : ${DATABASE_PASSWORD}
+  database_host : ${DATABASE_HOST_NAME}
+  database_port : ${DATABASE_PORT}
   pool_size : 10
   pool_timeout : 30
