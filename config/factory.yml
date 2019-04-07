@@ -48,3 +48,7 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["POST"]
+  request_user_records:
+    module: "user_service"
+    class: "UserService"
+    type: ["GET"]

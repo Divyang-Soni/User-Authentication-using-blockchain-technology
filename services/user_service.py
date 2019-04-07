@@ -91,3 +91,6 @@ class UserService(BaseService):
 
     def add_user_record(self):
         self._message = 'success'
+
+    def request_user_records(self):
+        self._message = 'success'
