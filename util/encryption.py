@@ -1,5 +1,5 @@
 from cryptography.fernet import Fernet
-import util
+from util import util
 
 config = util.parse_config()
 key = config['encryption']['key']
