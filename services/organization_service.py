@@ -45,7 +45,7 @@ class OrganizationService(BaseService):
         user_data['dob'] = self._params['founded_date']
         user_data['email'] = self._params['email']
         user_data['password'] = self._params['name']
-        user_data['user_type'] = 1
+        user_data['user_type'] = 2
 
         user_dao = UserDao(self._user_id)
 

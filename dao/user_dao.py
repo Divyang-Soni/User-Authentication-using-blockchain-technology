@@ -58,7 +58,7 @@ class UserDao(BaseDao):
             return None
         if not fields:
             fields = self.__user_profile_fields
-        if data['user_id'] <= 0:  #new profile creation
+        if data['user_id'] <= 0:  # new profile creation
             fields.append('created_date')
             fields.append('created_by')
             data['created_by'] = self.__user_id

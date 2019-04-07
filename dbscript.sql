@@ -30,6 +30,10 @@ CREATE TABLE IF NOT EXISTS user_profile(id serial PRIMARY KEY, user_id int NOT N
 CREATE TABLE IF NOT EXISTS user_verify(id serial PRIMARY KEY, user_id int NOT NULL, verification_id VARCHAR(50), verification_type VARCHAR(50), created_date date, created_by int, modified_date date, modified_by int, delete_flag int DEFAULT 0, deleted_by int);
 
 CREATE TABLE IF NOT EXISTS user_type(id serial PRIMARY KEY, type VARCHAR(50) UNIQUE, delete_flag int DEFAULT 0);
+INSERT INTO user_type (type) values ('admin');
+INSERT INTO user_type (type) values ('org_admin');
+INSERT INTO user_type (type) values ('org_user');
+INSERT INTO user_type (type) values ('user');
 
 CREATE TABLE IF NOT EXISTS user_organization_mapping(id serial PRIMARY KEY, organization_id int NOT NULL, user_id int NOT NULL, user_role int NOT NULL, delete_flag int DEFAULT 0);
 

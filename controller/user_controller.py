@@ -20,7 +20,14 @@ It will execute below steps
 @cross_origin(supports_credentials=True)
 def process_request(service):
     factory_instance = factory.ServiceFactory()
-    params = json.loads(request.data.decode("utf-8"))
+    try:
+        if request.methos == 'GET':
+            params = json.loads(json.dumps(request.form).decode("utf-8"))
+        else:
+            params = json.loads(request.data.decode("utf-8"))
+    except:
+        return 'Invalid Input Data.', 400
+
     class_name, enforce_session = factory_instance.get_service_class(service, request.method)
     if class_name is None:
         return 'Not Found', 404

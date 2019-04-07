@@ -1,10 +1,17 @@
-import yaml
+import yaml, os, re
 import logging
 import pickle
 from datetime import datetime
 
 
 LOG_FORMAT = '%(asctime)-15s %(filename)s %(funcName)s line %(lineno)d %(levelname)s:  %(message)s'
+
+# defining the regex pattern that the parser will use to 'implicitely' tag node
+pattern = re.compile(r"\${(.*?)\}")
+
+
+# now define a custom tag ( say pathex ) and associate the regex pattern we defined
+yaml.add_implicit_resolver("!pathex", pattern)
 
 
 def parse_config(path="./config/config.yaml"):
