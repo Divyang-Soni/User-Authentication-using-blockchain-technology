@@ -40,3 +40,11 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["GET"]
+  get_organization_details:
+    module: "organization_service"
+    class: "OrganizationService"
+    type: ["GET"]
+  add_user_record:
+    module: "user_service"
+    class: "UserService"
+    type: ["POST"]

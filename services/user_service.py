@@ -88,3 +88,6 @@ class UserService(BaseService):
             self._response_data = info
         else:
             self._message = 'failed'
+
+    def add_user_record(self):
+        self._message = 'success'

@@ -68,4 +68,19 @@ class OrganizationService(BaseService):
         else:
             self._message = 'failed'
 
+    def get_organization_details(self):
+        if self._params.get('organization_id', '') == '':
+            self._params['organization_id'] = self._organization_id
+
+        if self._params.get('type', '') == 'full':
+            info = self.__dao.get_organization_all_details(org_id=self._params['organization_id'])
+        else:
+            info = self.__dao.get_organization_details(org_id=self._params['organization_id'])
+
+        if info:
+            self._message = 'success'
+            self._response_data = json.dumps(info)
+        else:
+            self._message = 'failed'
+
 
