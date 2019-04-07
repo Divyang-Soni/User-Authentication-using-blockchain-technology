@@ -28,9 +28,9 @@ class OrganizationService(BaseService):
             try:
                 func()
             except Exception as e:
-                traceback.format_exc(e)
+                ef = traceback.format_exc(e)
                 self._message = 'failed'
-                self._error = e.__str__()
+                self._error = ef
                 return e
         else:
             self._error = "Function is not implemented."
@@ -47,7 +47,7 @@ class OrganizationService(BaseService):
         user_data['password'] = self._params['name']
         user_data['user_type'] = 2
 
-        user_dao = UserDao(self._user_id)
+        user_dao = UserDao(self._user_id, self._user_type)
 
         if user_dao.is_duplicate_user(user_data):
             self._message = 'failure'

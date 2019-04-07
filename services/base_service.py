@@ -1,5 +1,5 @@
-from flask import request
 from abc import abstractmethod
+from util import encryption
 '''
 This class is a base service which has skeleton code which needs to be followed by all service
 Basically all the service will extend this class and will override 2=3 abstract methods
@@ -22,6 +22,7 @@ class BaseService:
 
     _user_id = 0
     _organization_id = 0
+    _user_type = None
 
     # initializing base service and putting params in it
     # checking the validity of session and setting the valid param
@@ -41,7 +42,8 @@ class BaseService:
             self._is_valid = False
             self._message = 'Unauthorised'
         else:
-            self._user_id = session['uid']
+            self._user_id = encryption.decrypt(session['ux'])
+            self._user_type = encryption.decrypt(session['ty'])
             self._is_valid = True
 
     # public method to check that the session is valid or not

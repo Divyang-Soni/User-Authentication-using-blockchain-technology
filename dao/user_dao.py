@@ -35,8 +35,9 @@ class UserDao(BaseDao):
 
     __current_user_type = None
 
-    def __init__(self, user_id, file_path='./config/config.yaml'):
+    def __init__(self, user_id, user_type=None, file_path='./config/config.yaml'):
         self.__user_id = user_id
+        self.__current_user_type = user_type
         super(UserDao, self).__init__(file_path=file_path)
 
     def create_user(self, data=None, model_instance=None, fields=None, old_connection=None):
@@ -81,6 +82,8 @@ class UserDao(BaseDao):
             return None
         if not fields:
             fields = self.__user_organizations_fields
+        if self.is_normal_user(self.__user_id):
+            raise Exception("User is not allowed to perform this action.")
 
         return self.insert_records(table_name="user_organization_mapping", args_dict=data, fields=fields)
 
@@ -94,8 +97,6 @@ class UserDao(BaseDao):
         if data.get('user_id', '') != '':
             if data.get('user_id') == 'current':
                 data['user_id'] = self.__user_id
-            elif self.is_normal_user(self.__user_id):  # user is not allowed to access information
-                raise Exception("Operation is not permitted for this user")
 
             sql = sql + " and ub.id like  %(user_id)s%"
         else:
@@ -114,10 +115,10 @@ class UserDao(BaseDao):
             if data.get('zip', '') == '':
                 sql = sql + " and up.zip = %(zip)s%"
 
-        if data['user_id'] != self.__user_id:
+        if data.get('user_id', '') != self.__user_id:
             if not self.is_user_admin(self.__user_id):
-                sql = sql + " and ub.user_type <> {}".format(constants.USER_ORGANIZATION_ADMIN)
-                sql = sql + " and ub.user_type <> {}".format(constants.USER_ADMIN)
+                sql = sql + " and ub.user_type <> {}".format(self.get_user_type_number(constants.USER_ORGANIZATION_ADMIN))
+                sql = sql + " and ub.user_type <> {}".format(self.get_user_type_number(constants.USER_ADMIN))
 
         user_info_arr = self.fetch_data(sql=sql, data=data)
 
@@ -131,6 +132,15 @@ class UserDao(BaseDao):
                     data1 = {'user_id': user_info.get('id')}
                     ret['user_organizations'] = self.get_user_organizations(data=data1)
         return ret
+
+    def get_user_type_number(self, user_type):
+        if not self.__user_types:
+            self.__user_types = self.get_user_types()
+        user_types = self.__user_types
+        for utype in user_types:
+            if user_type == utype.type:
+                return utype.id
+        raise Exception("User type {} is not available in the database".format(user_type))
 
     def get_user_organizations(self, data=None):
         where = " user_id =  %(user_id)s and delete_flag = 0"
