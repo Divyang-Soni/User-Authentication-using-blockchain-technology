@@ -130,7 +130,10 @@ class UserDao(BaseDao):
 
         user_info_arr = self.fetch_data(sql=sql, args_dict=data)
 
-        ret['user_info'] = user_info_arr
+        if data.get('user_id', '') != '' and user_info_arr and len(user_info_arr)>0:
+            ret['user_info'] = user_info_arr[0]
+        else:
+            ret['user_info'] = user_info_arr
 
         if data.get('user_id', '') != '' and data.get('type') == 'full':
             if len(user_info_arr) == 1:
