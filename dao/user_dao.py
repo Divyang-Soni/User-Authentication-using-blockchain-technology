@@ -92,7 +92,7 @@ class UserDao(BaseDao):
 
         return self.insert_records(table_name="user_organization_mapping", args_dict=data, fields=fields)
 
-    def ger_user_info(self, data=None):
+    def get_user_info(self, data=None):
         if not data:
             return None
 
@@ -103,7 +103,7 @@ class UserDao(BaseDao):
             if data.get('user_id') == 'current':
                 data['user_id'] = self.__user_id
 
-            sql = sql + " and ub.id like  %(user_id)s%"
+            sql = sql + " and ub.id =  %(user_id)s"
         else:
             if data.get('email', '') != '':
                 sql = sql + " and ub.email like  %(email)s%"
