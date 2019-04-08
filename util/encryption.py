@@ -2,14 +2,14 @@ from cryptography.fernet import Fernet
 from util import util
 
 config = util.parse_config()
-key = config['encryption']['key']
+key = Fernet.generate_key()
 
 
 def encrypt(data):
     f = Fernet(key)
-    return f.encrypt(data)
+    return f.encrypt(str(data).encode())
 
 
 def decrypt(encrypted):
     f = Fernet(key)
-    return f.decrypt(encrypted)
+    return f.decrypt(encrypted).decode()
