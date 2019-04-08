@@ -22,12 +22,13 @@ class UserDao(BaseDao):
 
     __user_name_exist_sql = "SELECT id FROM user_basic where last_name = %(last_name)s and given_name = %(given_name)s)"
 
-    __user_all_details_sql = "SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
-                             "up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
-                             "up.country_of_citizenship, up.zip, up.phone " \
-                             "from  user_basic ub " \
-                             "JOIN user_profile up ON ub.id = up.user_id" \
-                             "where ub.delete_flag = 0 and up.delete_flag = 0"
+    __user_all_details_sql = " SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
+                             " up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
+                             " up.country_of_citizenship, up.zip, up.phone, uom.organization_id " \
+                             " from  user_basic ub " \
+                             " JOIN user_profile up ON ub.id = up.user_id " \
+                             " JOIN user_organization_mapping uom on uom.user_id = ub.id " \
+                             " where ub.delete_flag = 0 and up.delete_flag = 0 and uom.delete_flag=0"
 
     __user_type_sql = "SELECT user_type from user_basic where id = %(user_id)s"
 
@@ -35,7 +36,9 @@ class UserDao(BaseDao):
 
     __current_user_type = None
 
-    def __init__(self, user_id, user_type=None, file_path='./config/config.yaml'):
+    __current_user_organization = None
+
+    def __init__(self, user_id, user_type=None, user_organization=None, file_path='./config/config.yaml'):
         self.__user_id = user_id
         self.__current_user_type = user_type
         super(UserDao, self).__init__(file_path=file_path)
@@ -120,7 +123,10 @@ class UserDao(BaseDao):
                 sql = sql + " and ub.user_type <> {}".format(self.get_user_type_number(constants.USER_ORGANIZATION_ADMIN))
                 sql = sql + " and ub.user_type <> {}".format(self.get_user_type_number(constants.USER_ADMIN))
 
-        user_info_arr = self.fetch_data(sql=sql, data=data)
+        if self.is_normal_user(self.__user_id):
+            sql = sql + "uom.organization_id = {}".format(self.__current_user_organization)
+
+        user_info_arr = self.fetch_data(sql=sql, args_dict=data)
 
         ret['user_info'] = user_info_arr
 
