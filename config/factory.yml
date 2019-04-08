@@ -23,7 +23,7 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["POST"]
-  ger_user_info :
+  get_user_info :
     module: "user_service"
     class: "UserService"
     type: ["GET"]
