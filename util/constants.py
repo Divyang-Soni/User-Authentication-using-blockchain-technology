@@ -2,3 +2,7 @@ USER_ADMIN = "admin"
 USER_ORGANIZATION_ADMIN = "org_admin"
 USER_ORGANIZATION_USER = "org_user"
 USER_NORM = "user"
+
+PENDING = 0
+APPROVED = 1
+DECLINED = 2

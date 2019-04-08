@@ -38,3 +38,9 @@ INSERT INTO user_type (type) values ('user');
 CREATE TABLE IF NOT EXISTS user_organization_mapping(id serial PRIMARY KEY, organization_id int NOT NULL, user_id int NOT NULL, user_role int NOT NULL, delete_flag int DEFAULT 0);
 
 CREATE TABLE IF NOT EXISTS verification_type(id serial PRIMARY KEY, type VARCHAR(50) UNIQUE, delete_flag int DEFAULT 0);
+
+----------------------------- block data -----------------------------
+
+CREATE TABLE IF NOT EXISTS data_request(id serial PRIMARY KEY , from_id int NOT NULL, for_id int NOT NULL, data_category int NOT NULL, requested_datetime date NOT NULL, status int, response_time date, review_date date)
+
+

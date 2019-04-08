@@ -20,6 +20,8 @@ class UserDao(BaseDao):
 
     __user_type_fields = ['id', 'type']
 
+    __request_userdata_fields = ['from_id', 'for_id', 'data_category', 'requested_datetime']
+
     __user_name_exist_sql = "SELECT id FROM user_basic where last_name = %(last_name)s and given_name = %(given_name)s)"
 
     __user_all_details_sql = " SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
@@ -33,6 +35,20 @@ class UserDao(BaseDao):
                              " where ub.delete_flag = 0"
 
     __user_type_sql = "SELECT user_type from user_basic where id = %(user_id)s"
+
+    __get_all_data_request_sql = " SELECT dr.id as Id, CONCAT(ub.last_name, ',',ub.given_name)," \
+                                 "      dr.requested_datetime, rt.type as Category, " \
+                                 "      CASE " \
+                                 "          WHEN dr.status = 0 THEN 'Pending'" \
+                                 "          WHEN dr.status = 1 THEN 'Approved'" \
+                                 "          WHEN dr.status = 2 THEN 'Declined'" \
+                                 "      END as Status" \
+                                 " FROM data_request dr " \
+                                 " JOIN record_type rt " \
+                                 "      ON rt.id = dr.data_category " \
+                                 " JOIN user_basic ub " \
+                                 "      ON ub.id = dr.from_id and ub.delete_flag = 0 " \
+                                 " WHERE  dr.for_id = %(user_id)s "
 
     __user_types = None
 
@@ -201,3 +217,30 @@ class UserDao(BaseDao):
         if user and len(user) > 0:
             return True
         return False
+
+    def request_user_data(self, data):
+        if not data:
+            return None
+        fields = self.__request_userdata_fields
+        if self.is_normal_user(self.__user_id):
+            raise Exception("User is not allowed to perform this action.")
+        data['requested_datetime'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        data['from_id'] = self.__user_id
+        return self.insert_records(table_name="data_request", args_dict=data, fields=fields)
+
+    def get_all_data_request(self, data):
+
+        sql = self.__get_all_data_request_sql
+        if data.get('from_date', '') != '':
+            sql = sql + " and dr.requested_datetime >= %(from_date)s "
+
+        if data.get('to_date', '') != '':
+            sql = sql + " and dr.requested_datetime <= %(to_date)s "
+
+        if data.get('status', '') != '':
+            sql = sql + " and dr.status = %(status)s "
+
+        return self.fetch_data(sql=sql, args_dict=data)
+
+    def get_all_request_status(self):
+        return None
