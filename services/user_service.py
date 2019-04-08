@@ -72,7 +72,7 @@ class UserService(BaseService):
         else:
             self._message = 'failed'
 
-    def ger_user_info(self):
+    def get_user_info(self):
 
         if self._params.get('user_id', '') != 'current' and \
                 self.__UserDao.is_normal_user(self._user_id):
