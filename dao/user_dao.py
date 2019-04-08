@@ -25,9 +25,11 @@ class UserDao(BaseDao):
     __user_all_details_sql = " SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
                              " up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
                              " up.country_of_citizenship, up.zip, up.phone, uom.organization_id " \
-                             " from  user_basic ub " \
-                             " JOIN user_profile up ON ub.id = up.user_id and up.delete_flag = 0 " \
-                             " JOIN user_organization_mapping uom on uom.user_id = ub.id and uom.delete_flag=0 " \
+                             " FROM  user_basic ub " \
+                             " LEFT OUTER JOIN user_profile up " \
+                             "      ON ub.id = up.user_id and up.delete_flag = 0 " \
+                             " LEFT OUTER JOIN user_organization_mapping uom " \
+                             "      ON uom.user_id = ub.id and uom.delete_flag=0 " \
                              " where ub.delete_flag = 0"
 
     __user_type_sql = "SELECT user_type from user_basic where id = %(user_id)s"
