@@ -118,3 +118,11 @@ class UserService(BaseService):
     def logout(self):
         session.clear()
         self._message = 'success'
+
+    def get_all_data_request(self):
+        info = self.__UserDao.get_all_data_request(self._params)
+        if info and len(info) > 0:
+            self._message = 'success'
+            self._response_data = json.dumps(info)
+        else:
+            self._message = 'failed'

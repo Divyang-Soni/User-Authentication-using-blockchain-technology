@@ -51,8 +51,12 @@ services:
   request_user_records:
     module: "user_service"
     class: "UserService"
-    type: ["GET"]
+    type: ["POST"]
   logout:
     module: "user_service"
     class: "UserService"
-    type: ["POST"]
+    type: ["GET"]
+  get_all_data_request:
+    module: "user_service"
+    class: "UserService"
+    type: ["GET"]
