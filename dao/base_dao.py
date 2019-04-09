@@ -15,7 +15,7 @@ class BaseDao(SQLUtil):
         values = ','.join("%("+l+")s" for l in fields)
         str_fields = ','.join(fields)
 
-        return "INSERT INTO {} ({}) VALUES({}) RETURNING id".format(table_name, str_fields, values)
+        return "INSERT INTO {} ({}) VALUES({})".format(table_name, str_fields, values)
 
     def insert_records(self, table_name, fields, args_dict, connection=None):
         sql = self.create_insert_query(table_name, fields)
@@ -30,7 +30,7 @@ class BaseDao(SQLUtil):
         values = ','.join("%s" for l in fields)
         str_fields = ','.join(fields)
 
-        return "INSERT INTO {} ({}) VALUES({})  RETURNING id".format(table_name, str_fields, values)
+        return "INSERT INTO {} ({}) VALUES({})".format(table_name, str_fields, values)
 
     def insert_single_record(self, table_name, fields, args_dict, connection=None):
         sql = self.create_insert_query(table_name, fields)

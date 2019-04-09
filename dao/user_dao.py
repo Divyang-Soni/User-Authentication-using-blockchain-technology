@@ -70,7 +70,11 @@ class UserDao(BaseDao):
         data['password'] = '12345'
         data['created_by'] = self.__user_id
         data['created_date'] = str(datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
-        return self.insert_records('user_basic', fields=fields, args_dict=data, connection=old_connection)
+        if self.insert_records('user_basic', fields=fields, args_dict=data, connection=old_connection):
+            user = self.fetch_data(sql=self.__user_name_exist_sql, args_dict=data)
+            if user and len(user) > 0:
+                return user[0]['id']
+        return 0
 
     def validate_user(self, data=None, fields=None):
         if not data:
@@ -123,28 +127,29 @@ class UserDao(BaseDao):
             sql = sql + " and ub.id =  %(user_id)s"
         else:
             if data.get('email', '') != '':
-                data['email'] = data['email']+'%'
+                data['email'] = data['email'] + '%'
                 sql = sql + " and ub.email like  %(email)s"
 
             if data.get('given_name', '') != '':
                 data['given_name'] = data['given_name'] + '%'
-                sql = sql + " and ub.given_name = %(given_name)s"
+                sql = sql + " and ub.given_name like %(given_name)s"
 
-            if data.get('last_name') == '':
+            if data.get('last_name', '') != '':
                 data['last_name'] = data['last_name'] + '%'
-                sql = sql + " and ub.last_name = %(last_name)s"
+                sql = sql + " and ub.last_name like %(last_name)s"
 
-            if data.get('address_line_1', '') == '':
+            if data.get('address_line_1', '') != '':
                 data['address_line_1'] = data['address_line_1'] + '%'
-                sql = sql + " and up.address_line_1 = %(address_line_1)s"
+                sql = sql + " and up.address_line_1 like %(address_line_1)s"
 
-            if data.get('zip', '') == '':
+            if data.get('zip', '') != '':
                 data['zip'] = data['zip'] + '%'
-                sql = sql + " and up.zip = %(zip)s"
+                sql = sql + " and up.zip like %(zip)s"
 
         if data.get('user_id', '') != self.__user_id:
             if not self.is_user_admin(self.__user_id):
-                sql = sql + " and ub.user_type <> {}".format(self.get_user_type_number(constants.USER_ORGANIZATION_ADMIN))
+                sql = sql + " and ub.user_type <> {}".format(
+                    self.get_user_type_number(constants.USER_ORGANIZATION_ADMIN))
                 sql = sql + " and ub.user_type <> {}".format(self.get_user_type_number(constants.USER_ADMIN))
 
         if self.is_normal_user(self.__user_id):
@@ -152,7 +157,7 @@ class UserDao(BaseDao):
 
         user_info_arr = self.fetch_data(sql=sql, args_dict=data)
 
-        if data.get('user_id', '') != '' and user_info_arr and len(user_info_arr)>0:
+        if data.get('user_id', '') != '' and user_info_arr and len(user_info_arr) > 0:
             ret['user_info'] = user_info_arr[0]
         else:
             ret['user_info'] = user_info_arr
@@ -171,8 +176,8 @@ class UserDao(BaseDao):
             self.__user_types = self.get_user_types()
         user_types = self.__user_types
         for utype in user_types:
-            if user_type == utype.type:
-                return utype.id
+            if user_type == utype['type']:
+                return utype['id']
         raise Exception("User type {} is not available in the database".format(user_type))
 
     def get_user_organizations(self, data=None):
@@ -194,12 +199,12 @@ class UserDao(BaseDao):
         return self.validate_user_type(user_id, constants.USER_ORGANIZATION_USER)
 
     def validate_user_type(self, user_id, desired_user_type):
-        if not self.__current_user_type:
+        if self.__current_user_type:
             data = {'user_id': user_id}
             user = self.fetch_data(sql=self.__user_type_sql, args_dict=data)
 
             if user and len(user) > 0:
-                self.__current_user_type = user[0].user_type
+                self.__current_user_type = user[0]['user_type']
             user_type = self.__current_user_type
 
             if not self.__user_types:
@@ -207,8 +212,8 @@ class UserDao(BaseDao):
             user_types = self.__user_types
 
             for utype in user_types:
-                if user_type == utype.id:
-                    if utype.type == desired_user_type:
+                if user_type == utype['id']:
+                    if utype['type'] == desired_user_type:
                         return True
         return False
 

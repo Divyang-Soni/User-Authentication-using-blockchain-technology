@@ -61,10 +61,10 @@ class OrganizationService(BaseService):
                 data = dict()
                 data['organization_id'] = org_id
                 data['user_id'] = uid
-                data['user_type'] = 2
-                user_dao.add_user_organization(data=data)
-                self._message = 'success'
-                return
+                data['user_role'] = 2
+                if user_dao.add_user_organization(data=data):
+                    self._message = 'success'
+                    return
         self._message = 'failure'
 
     def get_organization_types(self):

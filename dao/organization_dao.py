@@ -23,6 +23,8 @@ class OrganizationDao(BaseDao):
 
     __organization_type_fields = ['id', 'type']
 
+    __organization_id_sql = "SELECT id FROM organization_details WHERE name = %(name)s"
+
     def __init__(self, org_id, user_id, file_path='./config/config.yaml'):
         self.__org_id = org_id
         self.__user_id = user_id
@@ -36,14 +38,18 @@ class OrganizationDao(BaseDao):
                 fields = self._organization_details_update_fields
                 data['updated_by'] = self.__user_id
                 data['updated_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                return self.insert_single_record('organization_details', fields=fields, args_dict=data,
-                                                 connection=old_connection)
+                if self.update_record('organization_details', fields=fields, args_dict=data,
+                                      connection=old_connection):
+                    return data['organization_id']
             else:
                 fields = self.__organization_details_fields
                 data['created_by'] = self.__user_id
                 data['created_date'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-                return self.insert_single_record('organization_details', fields=fields, args_dict=data,
-                                                 connection=old_connection)
+                if self.insert_single_record('organization_details', fields=fields, args_dict=data,
+                                             connection=old_connection):
+                    org = self.fetch_data(sql=self.__organization_id_sql, args_dict=data)
+                    if org and len(org) > 0 :
+                        return org[0]['id']
 
     def add_organization_branch(self, data=None, model_instance=None, fields=None, old_connection=None):
         if model_instance:
