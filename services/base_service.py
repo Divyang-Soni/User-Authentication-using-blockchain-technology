@@ -38,12 +38,14 @@ class BaseService:
             self._is_valid = True
             return
 
-        if "ux" not in session:
+        if "ux" not in session or 'ty' not in session:
             self._is_valid = False
             self._message = 'Unauthorised'
         else:
             self._user_id = int(encryption.decrypt(session['ux']))
             self._user_type = int(encryption.decrypt(session['ty']))
+            if session.get('od', '') != '':
+                self._organization_id = int(encryption.decrypt(session['od']))
             self._is_valid = True
 
     # public method to check that the session is valid or not

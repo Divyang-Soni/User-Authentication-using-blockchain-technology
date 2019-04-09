@@ -226,14 +226,14 @@ class SQLUtil:
             new_connection = self.__db.get_connection(connection)
             if new_connection:
                 if args_dict:
-                    new_connection.execute(sql, args_dict)
+                    id = new_connection.execute(sql, args_dict)
                 else:
-                    new_connection.execute(sql)
+                    id = new_connection.execute(sql)
                 self.__db.close_connection(new_connection, old_connection=connection)
         except Exception as e:
             print("Error while executing query : {}".format(e))
-            return False
-        return True
+            return 0
+        return id
 
     '''
     This function is used to fetch data using query

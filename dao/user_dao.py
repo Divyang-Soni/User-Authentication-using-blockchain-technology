@@ -16,7 +16,7 @@ class UserDao(BaseDao):
 
     __user_login_fields = ['id', 'given_name', 'last_name', 'user_type']
 
-    __user_organizations_fields = ['organization_id', 'user_role']
+    __user_organizations_fields = ['organization_id', 'user_role', 'user_id']
 
     __user_type_fields = ['id', 'type']
 
@@ -59,6 +59,7 @@ class UserDao(BaseDao):
     def __init__(self, user_id, user_type=None, user_organization=None, file_path='./config/config.yaml'):
         self.__user_id = user_id
         self.__current_user_type = user_type
+        self.__current_user_organization = user_organization
         super(UserDao, self).__init__(file_path=file_path)
 
     def create_user(self, data=None, model_instance=None, fields=None, old_connection=None):

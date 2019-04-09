@@ -54,8 +54,15 @@ class OrganizationService(BaseService):
             self._error = "Organization with name {} is already exist.".format(self._params['name'])
             return
 
-        if self.__dao.create_organization(data=self._params):
-            if user_dao.create_user(data=user_data):
+        org_id = self.__dao.create_organization(data=self._params)
+        if org_id > 0:
+            uid = user_dao.create_user(data=user_data)
+            if uid > 0:
+                data = dict()
+                data['organization_id'] = org_id
+                data['user_id'] = uid
+                data['user_type'] = 2
+                user_dao.add_user_organization(data=data)
                 self._message = 'success'
                 return
         self._message = 'failure'

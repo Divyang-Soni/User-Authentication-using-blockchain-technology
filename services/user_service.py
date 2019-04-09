@@ -41,9 +41,15 @@ class UserService(BaseService):
     def create_user(self):
         if self.is_duplicate_user():
             self._error = "Organization with name {} is already exist.".format(self._params['name'])
-        elif self.__UserDao.create_user(self._params):
+        id = self.__UserDao.create_user(self._params)
+        if id > 0:
+            self._params['organization_id'] = self._organization_id
+            self._params['user_id'] = id
+            self._params['user_type'] = 3
+            self.add_user_organization()
             self._message = 'success'
-        self._message = 'failed'
+        else:
+            self._message = 'failed'
 
     def login(self):
         user = self.__UserDao.validate_user(data=self._params)
@@ -81,6 +87,8 @@ class UserService(BaseService):
         info = self.__UserDao.get_user_info(data=self._params)
         if info and info != {}:
             self._message = 'success'
+            if session.get('od', '') == '':
+                session['od'] = encryption.encrypt(info['user_info']['organization_id'])
             self._response_data = json.dumps(info)
         else:
             self._message = 'failed'
