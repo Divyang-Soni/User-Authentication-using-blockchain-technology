@@ -47,8 +47,8 @@ class UserDao(BaseDao):
                                  " JOIN record_type rt " \
                                  "      ON rt.id = dr.data_category " \
                                  " JOIN user_basic ub " \
-                                 "      ON ub.id = dr.from_id and ub.delete_flag = 0 " \
-                                 " WHERE  dr.for_id = %(user_id)s "
+                                 "      ON ub.id = dr.from_id and ub.delete_flag = 0 "
+
 
     __user_types = None
 
@@ -236,6 +236,10 @@ class UserDao(BaseDao):
     def get_all_data_request(self, data):
 
         sql = self.__get_all_data_request_sql
+        sql = sql + " WHERE  dr.for_id = %(user_id)s "
+
+        data['user_id'] = self.__user_id
+
         if data.get('from_date', '') != '':
             sql = sql + " and dr.requested_datetime >= %(from_date)s "
 
@@ -250,5 +254,24 @@ class UserDao(BaseDao):
 
         return self.fetch_data(sql=sql, args_dict=data)
 
-    def get_all_request_status(self):
-        return None
+    def get_all_request_status(self, data):
+
+        sql = self.__get_all_data_request_sql
+        sql = sql + " WHERE  dr.from_id = %(user_id)s "
+
+        data['user_id'] = self.__user_id
+
+        if data.get('from_date', '') != '':
+            sql = sql + " and dr.requested_datetime >= %(from_date)s "
+
+        if data.get('to_date', '') != '':
+            sql = sql + " and dr.requested_datetime <= %(to_date)s "
+
+        if data.get('status', '') != '':
+            sql = sql + " and dr.status = %(status)s "
+
+        if data.get('record_type', '') != '':
+            sql = sql + " and rt.id = %(record_type)s "
+
+        return self.fetch_data(sql=sql, args_dict=data)
+

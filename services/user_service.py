@@ -78,7 +78,7 @@ class UserService(BaseService):
                 self.__UserDao.is_normal_user(self._user_id):
             raise Exception("This action is not permitted for the user.")
 
-        info = self.__UserDao.ger_user_info(data=self._params)
+        info = self.__UserDao.get_user_info(data=self._params)
         if info and info != {}:
             self._message = 'success'
             self._response_data = json.dumps(info)
