@@ -1,6 +1,6 @@
 from util import util, constants
 from dao.base_dao import BaseDao
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class UserDao(BaseDao):
@@ -39,16 +39,16 @@ class UserDao(BaseDao):
     __get_all_data_request_sql = " SELECT dr.id as Id, CONCAT(ub.last_name, ',',ub.given_name)," \
                                  "      dr.requested_datetime, rt.type as Category, " \
                                  "      CASE " \
-                                 "          WHEN dr.status = 0 THEN 'Pending'" \
                                  "          WHEN dr.status = 1 THEN 'Approved'" \
                                  "          WHEN dr.status = 2 THEN 'Declined'" \
+                                 "          WHEN dr.requested_datetime < %(expired_date)s" \
+                                 "          WHEN dr.status = 0 THEN 'Pending'" \
                                  "      END as Status" \
                                  " FROM data_request dr " \
                                  " JOIN record_type rt " \
                                  "      ON rt.id = dr.data_category " \
                                  " JOIN user_basic ub " \
                                  "      ON ub.id = dr.from_id and ub.delete_flag = 0 "
-
 
     __user_types = None
 
@@ -239,6 +239,7 @@ class UserDao(BaseDao):
         sql = sql + " WHERE  dr.for_id = %(user_id)s "
 
         data['user_id'] = self.__user_id
+        data['expired_date'] = util.get_previous_date(30)
 
         if data.get('from_date', '') != '':
             sql = sql + " and dr.requested_datetime >= %(from_date)s "
@@ -258,8 +259,11 @@ class UserDao(BaseDao):
 
         sql = self.__get_all_data_request_sql
         sql = sql + " WHERE  dr.from_id = %(user_id)s "
+        sql = sql + " and (dr.review_date is NULL or dr.review_date >=  %(expired_access_date)s"
 
         data['user_id'] = self.__user_id
+        data['expired_access_date'] = util.get_previous_date(2)
+        data['expired_date'] = util.get_previous_date(30)
 
         if data.get('from_date', '') != '':
             sql = sql + " and dr.requested_datetime >= %(from_date)s "

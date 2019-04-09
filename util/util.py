@@ -1,7 +1,9 @@
-import yaml, os, re
+import yaml
+import os
+import re
 import logging
 import pickle
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 LOG_FORMAT = '%(asctime)-15s %(filename)s %(funcName)s line %(lineno)d %(levelname)s:  %(message)s'
@@ -62,3 +64,7 @@ def init_logging(file_path=None):
         file_path = "./logs_{}/{}".format(datetime.now(), file_path)
     logging.basicConfig(format=LOG_FORMAT, level="INFO", filename=file_path)
     return logging.getLogger()
+
+
+def get_previous_date(days):
+    return str(datetime.strftime(datetime.utcnow() - timedelta(days), "%Y-%m-%d %H:%M:%S"))

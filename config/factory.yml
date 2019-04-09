@@ -60,3 +60,7 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["GET"]
+  get_all_request_status:
+    module: "user_service"
+    class: "UserService"
+    type: ["GET"]
