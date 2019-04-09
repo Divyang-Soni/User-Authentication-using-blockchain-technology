@@ -22,7 +22,7 @@ class UserDao(BaseDao):
 
     __request_userdata_fields = ['from_id', 'for_id', 'data_category', 'requested_datetime']
 
-    __user_name_exist_sql = "SELECT id FROM user_basic where last_name = %(last_name)s and given_name = %(given_name)s)"
+    __user_name_exist_sql = "SELECT id FROM user_basic where last_name = %(last_name)s and given_name = %(given_name)s"
 
     __user_all_details_sql = " SELECT ub.id, ub.given_name, ub.last_name, ub.user_type, up.gender, up.ethnicity, " \
                              " up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
