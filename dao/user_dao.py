@@ -122,19 +122,24 @@ class UserDao(BaseDao):
             sql = sql + " and ub.id =  %(user_id)s"
         else:
             if data.get('email', '') != '':
-                sql = sql + " and ub.email like  %(email)s%"
+                data['email'] = data['email']+'%'
+                sql = sql + " and ub.email like  %(email)s"
 
             if data.get('given_name', '') != '':
-                sql = sql + " and ub.given_name = %(given_name)s%"
+                data['given_name'] = data['given_name'] + '%'
+                sql = sql + " and ub.given_name = %(given_name)s"
 
             if data.get('last_name') == '':
-                sql = sql + " and ub.last_name = %(last_name)s%"
+                data['last_name'] = data['last_name'] + '%'
+                sql = sql + " and ub.last_name = %(last_name)s"
 
             if data.get('address_line_1', '') == '':
-                sql = sql + " and up.address_line_1 = %(address_line_1)s%"
+                data['address_line_1'] = data['address_line_1'] + '%'
+                sql = sql + " and up.address_line_1 = %(address_line_1)s"
 
             if data.get('zip', '') == '':
-                sql = sql + " and up.zip = %(zip)s%"
+                data['zip'] = data['zip'] + '%'
+                sql = sql + " and up.zip = %(zip)s"
 
         if data.get('user_id', '') != self.__user_id:
             if not self.is_user_admin(self.__user_id):
@@ -239,6 +244,9 @@ class UserDao(BaseDao):
 
         if data.get('status', '') != '':
             sql = sql + " and dr.status = %(status)s "
+
+        if data.get('record_type', '') != '':
+            sql = sql + " and rt.id = %(record_type)s "
 
         return self.fetch_data(sql=sql, args_dict=data)
 

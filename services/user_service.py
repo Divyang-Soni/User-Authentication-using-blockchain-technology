@@ -107,4 +107,14 @@ class UserService(BaseService):
         self._message = 'success'
 
     def request_user_records(self):
+        if self.__UserDao.is_normal_user(self._user_id):
+            raise Exception("This action is not permitted for the user.")
+
+        if self.__UserDao.request_user_data(self._params):
+            self._message = 'success'
+        else:
+            self._message = 'failed'
+
+    def logout(self):
+        session.clear()
         self._message = 'success'

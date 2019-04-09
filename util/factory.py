@@ -28,7 +28,7 @@ class ServiceFactory:
             methods = service_cfg['type']
             if method not in methods:
                 return None
-            module_instance = importlib.import_module("."+service_cfg['module'], package=self._factory.directory)
+            module_instance = importlib.import_module(self._factory.directory+"."+service_cfg['module'])
             service_class = getattr(module_instance, service_cfg['class'])
             session_enforce = service_cfg.get('session', True)
             return service_class, session_enforce
