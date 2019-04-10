@@ -45,7 +45,7 @@ class UserService(BaseService):
         if id > 0:
             self._params['organization_id'] = self._organization_id
             self._params['user_id'] = id
-            self._params['user_role'] = 3
+            self._params['user_role'] = self._params['user_type']
             self.add_user_organization()
             self._message = 'success'
         else:
