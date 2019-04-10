@@ -40,12 +40,12 @@ class UserService(BaseService):
 
     def create_user(self):
         if self.is_duplicate_user():
-            self._error = "Organization with name {} is already exist.".format(self._params['name'])
+            self._error = "User with name {} is already exist.".format(self._params['name'])
         id = self.__UserDao.create_user(self._params)
         if id > 0:
             self._params['organization_id'] = self._organization_id
             self._params['user_id'] = id
-            self._params['user_type'] = 3
+            self._params['user_role'] = 3
             self.add_user_organization()
             self._message = 'success'
         else:
