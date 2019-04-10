@@ -42,7 +42,7 @@ class UserDao(BaseDao):
                                  "      CASE " \
                                  "          WHEN dr.status = 1 THEN 'Approved'" \
                                  "          WHEN dr.status = 2 THEN 'Declined'" \
-                                 "          WHEN dr.requested_datetime < %(expired_date)s" \
+                                 "          WHEN dr.requested_datetime < %(expired_date)s THEN 'Expired'" \
                                  "          WHEN dr.status = 0 THEN 'Pending'" \
                                  "      END as Status" \
                                  " FROM data_request dr " \

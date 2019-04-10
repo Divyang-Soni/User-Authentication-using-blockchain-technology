@@ -61,7 +61,7 @@ class OrganizationService(BaseService):
                 data = dict()
                 data['organization_id'] = org_id
                 data['user_id'] = uid
-                data['user_role'] = self._params['user_type']
+                data['user_role'] = user_data['user_type']
                 if user_dao.add_user_organization(data=data):
                     self._message = 'success'
                     return
