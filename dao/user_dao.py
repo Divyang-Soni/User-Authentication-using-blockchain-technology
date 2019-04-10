@@ -152,7 +152,7 @@ class UserDao(BaseDao):
                     self.get_user_type_number(constants.USER_ORGANIZATION_ADMIN))
                 sql = sql + " and ub.user_type <> {}".format(self.get_user_type_number(constants.USER_ADMIN))
 
-        if self.is_normal_user(self.__user_id):
+        if self.is_normal_user(self.__user_id) and data.get('user_id', '') == '':
             sql = sql + "uom.organization_id = {}".format(self.__current_user_organization)
 
         user_info_arr = self.fetch_data(sql=sql, args_dict=data)
