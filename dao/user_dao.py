@@ -25,7 +25,7 @@ class UserDao(BaseDao):
     __user_name_exist_sql = "SELECT id FROM user_basic where last_name = %(last_name)s and given_name = %(given_name)s"
 
     __user_all_details_sql = " SELECT ub.id, ub.given_name, ub.last_name, ub.email, ub.user_type, up.gender, " \
-                             " up.ethnicity, " \
+                             " to_char(ub.dob, 'YYYY-MM-DD HH-MI-SS'), up.ethnicity, " \
                              " up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
                              " up.country_of_citizenship, up.zip, up.phone, uom.organization_id " \
                              " FROM  user_basic ub " \
@@ -42,7 +42,8 @@ class UserDao(BaseDao):
                                  "      CASE " \
                                  "          WHEN dr.status = 1 THEN 'Approved'" \
                                  "          WHEN dr.status = 2 THEN 'Declined'" \
-                                 "          WHEN dr.requested_datetime < %(expired_date)s THEN 'Expired'" \
+                                 "          WHEN dr.requested_datetime < to_date(%(expired_date)s," \
+                                 "                          'YYYY-MM-DD HH:MI:SS') THEN 'Expired'" \
                                  "          WHEN dr.status = 0 THEN 'Pending'" \
                                  "      END as Status" \
                                  " FROM data_request dr " \
@@ -266,7 +267,8 @@ class UserDao(BaseDao):
 
         sql = self.__get_all_data_request_sql
         sql = sql + " WHERE  dr.from_id = %(user_id)s "
-        sql = sql + " and (dr.review_date is NULL or dr.review_date >=  %(expired_access_date)s"
+        sql = sql + " and (dr.review_date is NULL or " \
+                    " dr.review_date >=  to_date( %(expired_access_date)s, 'YYYY-MM-DD HH:MI:SS')) "
 
         data['user_id'] = self.__user_id
         data['expired_access_date'] = util.get_previous_date(2)

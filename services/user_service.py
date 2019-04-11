@@ -16,7 +16,7 @@ class UserService(BaseService):
         self.__logging = init_logging()
         self.__UserDao = UserDao(self._user_id, self._user_type)
 
-    # a base method which will internally call validate method with required params for each service
+    # a base method which will internally call validate method witget_all_request_statush required params for each service
     def validate_params(self):
         return True
 
@@ -152,7 +152,7 @@ class UserService(BaseService):
 
     def get_all_request_status(self):
         info = self.__UserDao.get_all_request_status(self._params)
-        if info and len(info) > 0:
+        if info:
             self._message = 'success'
             self._response_data = json.dumps(info)
         else:
