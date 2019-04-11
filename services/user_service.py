@@ -1,7 +1,7 @@
 from flask import session
 from services.base_service import BaseService
 from dao.user_dao import UserDao
-from util import util, encryption, BlockChainApi
+from util import encryption, BlockChainApi
 from util.util import init_logging
 import json
 import traceback
@@ -16,7 +16,8 @@ class UserService(BaseService):
         self.__logging = init_logging()
         self.__UserDao = UserDao(self._user_id, self._user_type)
 
-    # a base method which will internally call validate method witget_all_request_statush required params for each service
+    #  a base method which will internally call validate method
+    #  witget_all_request_statush required params for each service
     def validate_params(self):
         return True
 

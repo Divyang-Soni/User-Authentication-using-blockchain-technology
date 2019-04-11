@@ -37,8 +37,9 @@ class UserDao(BaseDao):
 
     __user_type_sql = "SELECT user_type from user_basic where id = %(user_id)s"
 
-    __get_all_data_request_sql = " SELECT dr.id as Id, CONCAT(ub.last_name, ',',ub.given_name)," \
-                                 "      dr.requested_datetime, rt.type as Category, " \
+    __get_all_data_request_sql = " SELECT dr.id as Id, CONCAT(ub.last_name, ',',ub.given_name) as name," \
+                                 "      to_char(dr.requested_datetime, 'YYYY-MM-DD HH:MI:SS') as requested_date," \
+                                 "       rt.type as Category, " \
                                  "      CASE " \
                                  "          WHEN dr.status = 1 THEN 'Approved'" \
                                  "          WHEN dr.status = 2 THEN 'Declined'" \

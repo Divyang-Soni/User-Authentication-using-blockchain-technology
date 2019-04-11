@@ -42,13 +42,22 @@ class BaseService:
             self._is_valid = False
             self._message = 'Unauthorised'
         else:
-            self._user_id = int(encryption.decrypt(session['ux']))
-            self._user_type = int(encryption.decrypt(session['ty']))
-            if session.get('od', '') != '':
+            try:
+                self._user_id = int(encryption.decrypt(session['ux']))
+                self._user_type = int(encryption.decrypt(session['ty']))
+                if session.get('od', '') != '':
+                    try:
+                        self._organization_id = int(encryption.decrypt(session['od']))
+                    except:
+                        session['od'] = ''
+            except Exception as e:
+                session.clear()
+                self._is_valid = False
                 try:
-                    self._organization_id = int(encryption.decrypt(session['od']))
+                    session.clear()
                 except:
-                    session['od'] = ''
+                    return
+                return
             self._is_valid = True
 
     # public method to check that the session is valid or not
