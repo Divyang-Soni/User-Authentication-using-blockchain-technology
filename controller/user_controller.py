@@ -3,8 +3,13 @@ from flask import jsonify
 from util import factory
 from flask_cors import CORS, cross_origin
 import json
+import traceback
+from util.util import init_logging
 
 user = Blueprint('user_controller', __name__, template_folder='')
+
+logging = init_logging()
+
 
 '''
 This api call will be used to serve all the get as well as post requests
@@ -26,6 +31,7 @@ def process_request(service):
         else:
             params = json.loads(request.data.decode("utf-8"))
     except:
+        logging.error("Error while fetching data from request: %s", traceback.format_exc())
         return 'Invalid Input Data.', 400
 
     class_name, enforce_session = factory_instance.get_service_class(service, request.method)
