@@ -1,7 +1,7 @@
-from util import encryption, HTTPClient
-import json
+from util import encryption
+from util.HTTPClient import http_request
 
-BLOCK_CHAIN_API_URL = "localhost:8081"
+BLOCK_CHAIN_API_URL = "http://localhost:8081"
 
 
 def get_block_head_id(userid):
@@ -10,8 +10,8 @@ def get_block_head_id(userid):
 
 def create_user_initial_block(userid):
     data = dict()
-    data['_id'] = get_block_head_id(userid)
-    return HTTPClient.post_data("POST", BLOCK_CHAIN_API_URL, data, '/user/insertdata')
+    data['_id'] = userid
+    return http_request("POST", BLOCK_CHAIN_API_URL, data, '/user/insertdata')
 
 
 def add_user_data(user_data, userid, current_user_id, current_org_id):
@@ -20,13 +20,13 @@ def add_user_data(user_data, userid, current_user_id, current_org_id):
     user_data['org_id'] = current_org_id
     user_data['user_id'] = current_user_id
     data['block_data'] = user_data
-    return HTTPClient.request_data("PUT", BLOCK_CHAIN_API_URL, data, '/user/insertdata')
+    return http_request("PUT", BLOCK_CHAIN_API_URL, data, '/user/insertdata')
 
 
 def request_data(userid, record_type, st, et):
     data = dict()
-    data['_id'] = get_block_head_id(userid)
+    data['_id'] = userid
     data['record_type'] = record_type
     data['st'] = st
     data['et'] = et
-    return HTTPClient.request_data("PUT", BLOCK_CHAIN_API_URL, data, '/user/insertdata')
+    return http_request("GET", BLOCK_CHAIN_API_URL, data, '/user/fetch')
