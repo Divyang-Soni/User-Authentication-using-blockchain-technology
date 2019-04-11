@@ -1,7 +1,7 @@
 from flask import session
 from services.base_service import BaseService
 from dao.user_dao import UserDao
-from util import util, encryption, BlockChainApi
+from util import encryption, BlockChainApi
 from util.util import init_logging
 import json
 import traceback
@@ -16,7 +16,8 @@ class UserService(BaseService):
         self.__logging = init_logging()
         self.__UserDao = UserDao(self._user_id, self._user_type)
 
-    # a base method which will internally call validate method with required params for each service
+    #  a base method which will internally call validate method
+    #  witget_all_request_statush required params for each service
     def validate_params(self):
         return True
 
@@ -50,7 +51,8 @@ class UserService(BaseService):
             self._params['user_id'] = id
             self._params['user_role'] = self._params['user_type']
             self.add_user_organization()
-            self._message = 'success'
+            if not BlockChainApi.create_user_initial_block(id):
+                self._message = 'failed'
         else:
             self._message = 'failed'
 
@@ -152,7 +154,7 @@ class UserService(BaseService):
 
     def get_all_request_status(self):
         info = self.__UserDao.get_all_request_status(self._params)
-        if info and len(info) > 0:
+        if info:
             self._message = 'success'
             self._response_data = json.dumps(info)
         else:

@@ -30,7 +30,7 @@ def process_request(service):
             params = json.loads(json.dumps(request.args))
         else:
             params = json.loads(request.data.decode("utf-8"))
-    except:
+    except Exception as e:
         logging.error("Error while fetching data from request: %s", traceback.format_exc())
         return 'Invalid Input Data.', 400
 
@@ -42,6 +42,7 @@ def process_request(service):
     status = 200
     if not instance.is_valid_session():
         status = 403
+        return "", status
     if instance.validate_params() and instance.parse_params():
         err = instance.process_request()
         if err:

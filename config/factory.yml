@@ -68,3 +68,8 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["GET"]
+  get_block_types:
+    module: "user_service"
+    class: "UserService"
+    type: ["GET"]
+
