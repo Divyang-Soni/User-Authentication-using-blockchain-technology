@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 5000
 mail_server:
   server_address: ${EMAIL_SERVER}
   port: ${EMAIL_PORT}
