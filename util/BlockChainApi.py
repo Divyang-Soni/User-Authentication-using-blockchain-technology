@@ -1,4 +1,4 @@
-from util import encryption
+from util import encryption, util
 from util.HTTPClient import http_request
 
 BLOCK_CHAIN_API_URL = "http://localhost:8081"
@@ -19,6 +19,7 @@ def add_user_data(user_data, userid, current_user_id, current_org_id):
     data['_id'] = userid
     user_data['org_id'] = current_org_id
     user_data['user_id'] = current_user_id
+    user_data['creation_timestamp'] = util.get_previous_date(0)
     data['block_data'] = user_data
     return http_request("PUT", BLOCK_CHAIN_API_URL, data, '/user/insertdata')
 

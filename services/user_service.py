@@ -51,7 +51,8 @@ class UserService(BaseService):
             self._params['user_id'] = id
             self._params['user_role'] = self._params['user_type']
             self.add_user_organization()
-            self._message = 'success'
+            if not BlockChainApi.create_user_initial_block(id):
+                self._message = 'failed'
         else:
             self._message = 'failed'
 
