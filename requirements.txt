@@ -3,3 +3,4 @@ PyYAML
 psycopg2
 sqlalchemy
 flask_cors
+cryptography
