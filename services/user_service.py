@@ -1,7 +1,7 @@
 from flask import session
 from services.base_service import BaseService
 from dao.user_dao import UserDao
-from util import encryption
+from util import util, encryption, BlockChainApi
 import json
 import traceback
 
@@ -112,7 +112,19 @@ class UserService(BaseService):
         return True
 
     def add_user_record(self):
-        self._message = 'success'
+        if BlockChainApi.add_user_data(self._params['block_data'], self._params['user_id'], self._user_id, self._organization_id):
+            self._message = 'success'
+        else:
+            self._message = 'failed'
+
+    def get_user_record(self):
+        data = BlockChainApi.request_data(self._params['user_id'], self._params.get('record_type', ''), \
+                                          self._params.get('st', ''), self._params.get('et', ''))
+        if data:
+            self._response_data = data
+            self._message = 'success'
+        else:
+            self._message = 'failed'
 
     def request_user_records(self):
         if self.__UserDao.is_normal_user(self._user_id):
