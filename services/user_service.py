@@ -159,3 +159,14 @@ class UserService(BaseService):
             self._response_data = json.dumps(info)
         else:
             self._message = 'failed'
+
+    def get_block_types(self):
+        info = self.__UserDao.get_block_types()
+        if info and len(info) > 0:
+            self._message = 'success'
+            self._response_data = json.dumps(info)
+        else:
+            self._message = 'failed'
+
+    # def response_used_data_request(self):
+

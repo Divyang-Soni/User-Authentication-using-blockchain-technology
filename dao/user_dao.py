@@ -25,7 +25,7 @@ class UserDao(BaseDao):
     __user_name_exist_sql = "SELECT id FROM user_basic where last_name = %(last_name)s and given_name = %(given_name)s"
 
     __user_all_details_sql = " SELECT ub.id, ub.given_name, ub.last_name, ub.email, ub.user_type, up.gender, " \
-                             " to_char(ub.dob, 'YYYY-MM-DD HH-MI-SS'), up.ethnicity, " \
+                             " to_char(ub.dob, 'YYYY-MM-DD HH-MI-SS') as dob, up.ethnicity, " \
                              " up.address_line_1, up.address_line_2, up.city, up.state, up.country_of_residence, " \
                              " up.country_of_citizenship, up.zip, up.phone, uom.organization_id " \
                              " FROM  user_basic ub " \
@@ -289,3 +289,8 @@ class UserDao(BaseDao):
 
         return self.fetch_data(sql=sql, args_dict=data)
 
+    def get_block_types(self):
+        where = " delete_flag = 0"
+        block_types = self.get_data(table_name='record_type',
+                                    fields=self.__user_type_fields, where=where)
+        return block_types
