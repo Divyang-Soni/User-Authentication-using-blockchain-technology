@@ -49,8 +49,8 @@ def http_request(method, url, data, endpoint):
     if response:
         logging.info("response from block chain status: %s, response data : %s ", response.status_code, response.json())
         if response.status_code == http.HTTPStatus.OK:
-            if method == "GET" and response.json():
-                logging.info("response from blockchain: %s ", response.json())
+            if method == "GET":
+                logging.info("response from block chain: %s ", response.json())
                 return response.json()
             return True
     return False
