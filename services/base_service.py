@@ -45,7 +45,10 @@ class BaseService:
             self._user_id = int(encryption.decrypt(session['ux']))
             self._user_type = int(encryption.decrypt(session['ty']))
             if session.get('od', '') != '':
-                self._organization_id = int(encryption.decrypt(session['od']))
+                try:
+                    self._organization_id = int(encryption.decrypt(session['od']))
+                except:
+                    session['od'] = ''
             self._is_valid = True
 
     # public method to check that the session is valid or not

@@ -87,7 +87,7 @@ class UserService(BaseService):
         info = self.__UserDao.get_user_info(data=self._params)
         if info and info != {}:
             self._message = 'success'
-            if session.get('od', '') == '':
+            if session.get('od', '') == '' and info['user_info'] and info['user_info']['organization_id']:
                 session['od'] = encryption.encrypt(info['user_info']['organization_id'])
             self._response_data = json.dumps(info)
         else:
