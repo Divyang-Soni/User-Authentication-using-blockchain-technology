@@ -36,11 +36,11 @@ logging = init_logging()
 
 def http_request(method, url, data, endpoint):
     response = None
-
+    logging.info("http_request data: %s", data)
     if method == "POST":
-        response = requests.post(url+endpoint, data)
+        response = requests.post(url+endpoint, json=data)
     elif method == "PUT":
-        response = requests.put(url+endpoint, data)
+        response = requests.put(url+endpoint, json=data)
     elif method == "GET":
         response = requests.get(url+endpoint, data)
     else:
