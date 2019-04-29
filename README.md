@@ -14,7 +14,7 @@ source ~/venv3/bin/activate
 ## install pip package in Virtual Env
 pip install -r requirements.txt
 
-## Project Dependancies
+# Project Dependancies
 
 This project contains Front End part of project "User Authentication Using Blockchain Technology".
 
