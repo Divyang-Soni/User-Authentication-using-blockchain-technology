@@ -168,5 +168,17 @@ class UserService(BaseService):
         else:
             self._message = 'failed'
 
-    # def response_used_data_request(self):
+    def approve_used_data_request(self):
+        if self._params:
+            self._params['status'] = 1
+            return self.__UserDao.respose_user_data_request(self._params)
+        return False
+
+    def deny_used_data_request(self):
+        if self._params:
+            self._params['status'] = 2
+            return self.__UserDao.respose_user_data_request(self._params)
+        return False
+
+
 

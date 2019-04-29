@@ -72,4 +72,12 @@ services:
     module: "user_service"
     class: "UserService"
     type: ["GET"]
+  approve_data_request:
+    module: "user_service"
+    class: "UserService"
+    type: ["POST"]
+  deny_data_request:
+    module: "user_service"
+    class: "UserService"
+    type: ["POST"]
 

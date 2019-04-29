@@ -294,3 +294,7 @@ class UserDao(BaseDao):
         block_types = self.get_data(table_name='record_type',
                                     fields=self.__user_type_fields, where=where)
         return block_types
+
+    def respose_user_data_request(self, data):
+        sql = "UPDATE data_request SET status = %(status)s WHERE id = %(id)s"
+        return self.execute_query(sql=sql, args_dict=data)
