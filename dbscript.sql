@@ -20,6 +20,8 @@ INSERT INTO record_type (type) values ('educational');
 INSERT INTO record_type (type) values ('medical');
 INSERT INTO record_type (type) values ('employment');
 INSERT INTO record_type (type) values ('driving');
+INSERT INTO record_type (type) values ('criminal');
+INSERT INTO record_type (type) values ('residential');
 
 ---------------------------- user details ---------------------------
 
