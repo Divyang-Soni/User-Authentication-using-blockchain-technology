@@ -296,5 +296,6 @@ class UserDao(BaseDao):
         return block_types
 
     def respose_user_data_request(self, data):
-        sql = "UPDATE data_request SET status = %(status)s WHERE id = %(id)s"
+        data['response_time'] = util.get_previous_date(0)
+        sql = "UPDATE data_request SET status = %(status)s and response_time = %(response_time)s WHERE id = %(id)s"
         return self.execute_query(sql=sql, args_dict=data)
