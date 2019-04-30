@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS user_organization_mapping(id serial PRIMARY KEY, orga
 CREATE TABLE IF NOT EXISTS verification_type(id serial PRIMARY KEY, type VARCHAR(50) UNIQUE, delete_flag int DEFAULT 0);
 
 ----------------------------- block data -----------------------------
+update data_request set status = 0 where id > 0;
 
-CREATE TABLE IF NOT EXISTS data_request(id serial PRIMARY KEY , from_id int NOT NULL, for_id int NOT NULL, data_category int NOT NULL, requested_datetime date NOT NULL, status int, response_time date, review_date date)
+CREATE TABLE IF NOT EXISTS data_request(id serial PRIMARY KEY , from_id int NOT NULL, for_id int NOT NULL, data_category int NOT NULL, requested_datetime date NOT NULL, status int default 0, response_time date, review_date date)
 
 

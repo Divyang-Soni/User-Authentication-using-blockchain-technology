@@ -77,7 +77,7 @@ class UserService(BaseService):
     def add_user_organization(self):
         if self.__UserDao.is_normal_user(self._user_id):
             raise Exception("This action is not permitted for the user.")
-
+        self._params['organization_id'] = self._organization_id
         if self.__UserDao.add_user_organization(self._params):
             self._message = 'success'
         else:
@@ -168,17 +168,29 @@ class UserService(BaseService):
         else:
             self._message = 'failed'
 
-    def approve_used_data_request(self):
+    def approve_data_request(self):
         if self._params:
             self._params['status'] = 1
-            return self.__UserDao.respose_user_data_request(self._params)
-        return False
+            if self.__UserDao.respose_user_data_request(self._params):
+                self._message = 'success'
+                return True
+        self._message = 'failed'
 
-    def deny_used_data_request(self):
+    def deny_data_request(self):
         if self._params:
             self._params['status'] = 2
-            return self.__UserDao.respose_user_data_request(self._params)
-        return False
+            if self.__UserDao.respose_user_data_request(self._params):
+                self._message = 'success'
+                return True
+        self._message = 'failed'
+
+    def remove_user_from_organization(self):
+        if self._params:
+            if self.__UserDao.remove_user_from_organization(self._params):
+                self._message = 'success'
+                return
+        self._message = 'failed'
+
 
 
 

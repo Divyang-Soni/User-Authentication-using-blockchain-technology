@@ -38,13 +38,13 @@ class UserDao(BaseDao):
     __user_type_sql = "SELECT user_type from user_basic where id = %(user_id)s"
 
     __get_all_data_request_sql = " SELECT dr.id as Id, CONCAT(ub.last_name, ',',ub.given_name) as name," \
-                                 "      to_char(dr.requested_datetime, 'YYYY-MM-DD HH:MI:SS') as requested_date," \
+                                 "      to_char(dr.requested_datetime, 'YYYY-MM-DD hh:MI:SS') as requested_date," \
                                  "       rt.type as Category, " \
                                  "      CASE " \
                                  "          WHEN dr.status = 1 THEN 'Approved'" \
                                  "          WHEN dr.status = 2 THEN 'Declined'" \
                                  "          WHEN dr.requested_datetime < to_date(%(expired_date)s," \
-                                 "                          'YYYY-MM-DD HH:MI:SS') THEN 'Expired'" \
+                                 "                          'YYYY-MM-DD hh:MI:SS') THEN 'Expired'" \
                                  "          WHEN dr.status = 0 THEN 'Pending'" \
                                  "      END as Status" \
                                  " FROM data_request dr " \
@@ -114,7 +114,15 @@ class UserDao(BaseDao):
         if self.is_normal_user(self.__user_id):
             raise Exception("User is not allowed to perform this action.")
 
+        self.remove_user_from_organization(data=data)
+
         return self.insert_records(table_name="user_organization_mapping", args_dict=data, fields=fields)
+
+    def remove_user_from_organization(self, data=None):
+        if not data:
+            return None
+        sql = "UPDATE user_organization_mapping SET delete_flag=1 WHERE user_id = %(user_id)s"
+        return self.execute_query(sql=sql, args_dict=data)
 
     def get_user_info(self, data=None):
         if not data:
@@ -269,7 +277,7 @@ class UserDao(BaseDao):
         sql = self.__get_all_data_request_sql
         sql = sql + " WHERE  dr.from_id = %(user_id)s "
         sql = sql + " and (dr.review_date is NULL or " \
-                    " dr.review_date >=  to_date( %(expired_access_date)s, 'YYYY-MM-DD HH:MI:SS')) "
+                    " dr.review_date >=  to_date( %(expired_access_date)s, 'YYYY-MM-DD hh:MI:SS')) "
 
         data['user_id'] = self.__user_id
         data['expired_access_date'] = util.get_previous_date(2)
@@ -297,5 +305,5 @@ class UserDao(BaseDao):
 
     def respose_user_data_request(self, data):
         data['response_time'] = util.get_previous_date(0)
-        sql = "UPDATE data_request SET status = %(status)s and response_time = %(response_time)s WHERE id = %(id)s"
+        sql = "UPDATE data_request SET status = %(status)s, response_time = %(response_time)s WHERE id = %(id)s"
         return self.execute_query(sql=sql, args_dict=data)
