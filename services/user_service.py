@@ -123,6 +123,16 @@ class UserService(BaseService):
             self._message = 'failed'
 
     def get_user_record(self):
+        if not self._params['user_id']:
+            self._message = 'failed'
+            self._error = "Invalid request."
+            return
+
+        if not self.__UserDao.is_user_admin(self._user_id) and int(self._params['user_id']) != self._user_id:
+            self._message = 'failed'
+            self._error = "Unauthorised request."
+            return
+
         data = BlockChainApi.request_data(self._params['user_id'], self._params.get('record_type', ''), \
                                           self._params.get('st', ''), self._params.get('et', ''))
         if data:
@@ -130,6 +140,27 @@ class UserService(BaseService):
             self._message = 'success'
         else:
             self._message = 'failed'
+
+    def get_approved_request_data(self):
+        self._params['from_id'] = self._user_id
+        request_content = self.__UserDao.get_request_content(self._params)
+        if request_content and len(request_content) > 0:
+            request_content = request_content[0]
+            status = int(request_content.get('status', '0'))
+            if status != 1:
+                self._message = "failed"
+                self._error = "Request is not approved"
+                return
+            else:
+                data = BlockChainApi.request_data(request_content.get('for_id'),
+                                                  self.request_content.get('data_category', ''),
+                                                  self._params.get('st', ''), self._params.get('et', ''))
+                self._message = 'success'
+                self._response_data = data
+
+        self._message = "failed"
+        self._error = "Error while retrieving request information."
+        return
 
     def request_user_records(self):
         if self.__UserDao.is_normal_user(self._user_id):

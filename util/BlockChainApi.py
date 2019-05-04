@@ -27,7 +27,7 @@ def add_user_data(user_data, userid, current_user_id, current_org_id):
 def request_data(userid, record_type, st, et):
     data = dict()
     data['_id'] = userid
-    data['record_type'] = record_type
+    data['block_type'] = record_type
     data['st'] = st
     data['et'] = et
     return http_request("GET", BLOCK_CHAIN_API_URL, data, '/user/fetch')

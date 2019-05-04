@@ -309,3 +309,10 @@ class UserDao(BaseDao):
         sql = "UPDATE user_organization_mapping SET delete_flag=1 WHERE user_id = %(user_id)s"
         return self.execute_query(sql=sql, args_dict=data)
 
+    def get_request_content(self, data=None):
+        if not data:
+            return False
+        fields = ['for_id', 'data_category', 'for_id']
+        where = " id = %(request_id)s and from_id = %(from_id)s "
+        return self.get_data(table_name='data_request', fields=fields, where=where)
+
