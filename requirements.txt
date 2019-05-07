@@ -1,6 +1,6 @@
 flask==1.0.2
 PyYAML
-psycopg2
+psycopg2-binary
 sqlalchemy
 flask_cors
 cryptography
