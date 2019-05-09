@@ -1,7 +1,9 @@
 from util import encryption, util
 from util.HTTPClient import http_request
+import os
 
-BLOCK_CHAIN_API_URL = "http://localhost:8081"
+BLOCK_CHAIN_API_URL = os.environ['BLOCK_CHAIN_API_URL']
+print("BLOCK_CHAIN_API_URL IS: "+BLOCK_CHAIN_API_URL)
 
 
 def get_block_head_id(userid):
