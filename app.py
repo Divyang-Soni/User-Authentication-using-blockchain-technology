@@ -15,6 +15,6 @@ if __name__ == '__main__' or __name__ == 'app':
     app.register_blueprint(user)
     port = int(os.environ.get('PORT', config['server']['port']))
     CORS(app, support_credentials=True)
-    app.config['DEBUG'] = True
-    app.run(host='0.0.0.0', port=config['server']['port'], debug=True)
+    #app.config['DEBUG'] = True
+    app.run(host='0.0.0.0', port=config['server']['port'], debug=False)
     print("server started: ", config['server']['port'])
