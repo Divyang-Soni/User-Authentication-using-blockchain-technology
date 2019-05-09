@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 import json
 import traceback
 from util.util import init_logging
+import os
 
 user = Blueprint('user_controller', __name__, template_folder='')
 
@@ -56,7 +57,7 @@ This api call will be used to do health check for the API server
 '''
 @user.route("/HealthCheck", methods=["GET"])
 def check_health():
-    msg = {'Message': 'API alive.'}
+    msg = {'Message': os.environ['BLOCK_CHAIN_API_URL']}
     return jsonify(msg)
 
 
