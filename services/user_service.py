@@ -61,6 +61,7 @@ class UserService(BaseService):
         if user and len(user) == 1:
             self._message = 'success'
             self._response_data = json.dumps(user[0])
+            session.permanent = True
             session['ux'] = encryption.encrypt(user[0].get('id'))
             session['ty'] = encryption.encrypt(user[0].get('user_type'))
 
