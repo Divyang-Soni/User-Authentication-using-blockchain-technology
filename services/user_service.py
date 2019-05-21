@@ -153,10 +153,11 @@ class UserService(BaseService):
                 return
             else:
                 data = BlockChainApi.request_data(request_content.get('for_id'),
-                                                  self.request_content.get('data_category', ''),
+                                                  request_content.get('data_category', ''),
                                                   self._params.get('st', ''), self._params.get('et', ''))
                 self._message = 'success'
                 self._response_data = data
+                return
 
         self._message = "failed"
         self._error = "Error while retrieving request information."

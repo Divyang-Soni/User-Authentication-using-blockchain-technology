@@ -87,4 +87,4 @@ services:
   get_approved_request_data:
     module: "user_service"
     class: "UserService"
-    type: ["POST"]
+    type: ["GET"]

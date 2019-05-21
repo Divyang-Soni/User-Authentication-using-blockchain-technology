@@ -10,11 +10,11 @@ aws_rds:
   access_key_id: xxxx
   secret_access_key: xxxx
 database:
-  database_name :  ${DATABASE_NAME}
-  user_name : ${DATABASE_USER_NAME}
-  password : ${DATABASE_PASSWORD}
-  database_host : ${DATABASE_HOST_NAME}
-  database_port : ${DATABASE_PORT}
+  database_name :  postgres
+  user_name : neha
+  password : root
+  database_host : localhost
+  database_port : 5433
   pool_size : 10
   pool_timeout : 30
 encryption:

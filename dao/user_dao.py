@@ -310,9 +310,10 @@ class UserDao(BaseDao):
         return self.execute_query(sql=sql, args_dict=data)
 
     def get_request_content(self, data=None):
+        print(data)
         if not data:
             return False
-        fields = ['for_id', 'data_category', 'for_id']
+        fields = ['for_id', 'data_category', 'status']
         where = " id = %(request_id)s and from_id = %(from_id)s "
-        return self.get_data(table_name='data_request', fields=fields, where=where)
+        return self.get_data(table_name='data_request', fields=fields, where=where, args_dict=data)
 
